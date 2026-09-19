@@ -31,6 +31,7 @@ jobs:
         run: |
           git config user.name "fpl-refresh-bot"
           git config user.email "fpl-refresh-bot@users.noreply.github.com"
+          git pull
           git add index.html
           git diff --staged --quiet || git commit -m "Auto-refresh: $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push
