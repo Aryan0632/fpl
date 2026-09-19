@@ -58,8 +58,7 @@
   /* Safe-area support: keeps content clear of the notch/Dynamic Island and
      home-indicator when this is added to the iOS home screen (standalone mode). */
   header.app-header{ padding-top: env(safe-area-inset-top); }
-  .mobile-theme-btn{ top: calc(0.75rem + env(safe-area-inset-top, 0px)); right: 0.75rem; }
-  .main-content{ padding-top: calc(4rem + env(safe-area-inset-top, 0px)) !important; }
+  .main-content{ padding-top: calc(1.25rem + env(safe-area-inset-top, 0px)) !important; }
   @media (min-width:640px){ .main-content{ padding-top: 1.25rem !important; } }
   footer{ padding-bottom: env(safe-area-inset-bottom); }
   .clickable:active{ background: var(--surface-2); }
@@ -115,6 +114,7 @@
   .more-sheet-item.active{ color:var(--pink); }
   .more-sheet-item:active{ background:var(--surface-2); }
   .more-sheet-item svg{ width:21px; height:21px; }
+  .more-sheet-divider{ height:1px; background:var(--border); margin:0.35rem 0.5rem; }
   .pill{ border-radius:999px; }
   .chip-fdr{
     display:inline-flex; align-items:center; justify-content:center; gap:2px;
@@ -188,7 +188,10 @@
     .pitch-bench-card{ width:50px; } .pitch-bench-name{ max-width:50px; }
   }
   .modal-backdrop{ position:fixed; inset:0; background:rgba(10,2,14,0.62); backdrop-filter:blur(2px); z-index:50; display:flex; justify-content:center; padding:1rem; overflow-y:auto; }
-  .modal-card{ background:var(--surface); border-radius:18px; max-width:680px; width:100%; height:fit-content; margin-top:2.5rem; margin-bottom:2.5rem; box-shadow:var(--shadow); }
+  .modal-card{ position:relative; background:var(--surface); border-radius:18px; max-width:680px; width:100%; height:fit-content; margin-top:2.5rem; margin-bottom:2.5rem; box-shadow:var(--shadow); }
+  .modal-close-mobile, .modal-back-mobile{ position:absolute; top:1.1rem; z-index:2; }
+  .modal-close-mobile{ right:1.1rem; }
+  .modal-back-mobile{ left:1.1rem; }
   a{ color:inherit; }
   ::-webkit-scrollbar{ width:10px; height:10px; } ::-webkit-scrollbar-thumb{ background:var(--surface-3); border-radius:8px; }
   .no-scrollbar::-webkit-scrollbar{ display:none; }
@@ -222,8 +225,6 @@
     </div>
   </header>
 
-  <button @click="toggleTheme" class="sm:hidden fixed z-30 w-10 h-10 rounded-full surface shadow-lg flex items-center justify-center text-base mobile-theme-btn" :title="theme==='dark' ? 'Switch to light' : 'Switch to dark'">{{ theme==='dark' ? '☀️' : '🌙' }}</button>
-
   <main class="main-content max-w-6xl mx-auto px-4 pt-5 pb-28 sm:pb-5 space-y-6">
 
     <!-- ============ HOME ============ -->
@@ -236,12 +237,12 @@
           <p class="text-[13px] text-dim mt-0.5">{{ isLive ? (nextRefreshText || 'waiting on the next data refresh') : ('GW'+meta.nextGw+' · '+formatDeadline) }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} AVERAGE</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.statsGw || meta.currentGw }} AVERAGE</p>
           <p class="big-num text-xl sm:text-2xl mt-1">{{ meta.currentGwAvg }}</p>
           <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwAvg }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} HIGHEST</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.statsGw || meta.currentGw }} HIGHEST</p>
           <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--green-ink)'}">{{ meta.currentGwHighest }}</p>
           <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwHighest }}</p>
         </div>
@@ -831,17 +832,25 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16.3 14.3c2.4.4 4.2 2.4 4.7 5.7"/></svg>
         <span>Ownership</span>
       </button>
+      <div class="more-sheet-divider"></div>
+      <button @click="toggleTheme(); showMoreSheet=false" class="more-sheet-item w-full">
+        <svg v-if="theme==='dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+        <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg>
+        <span>{{ theme==='dark' ? 'Light mode' : 'Dark mode' }}</span>
+      </button>
     </div>
   </div>
 
   <!-- ============ DETAIL MODAL ============ -->
   <div v-if="modalStack.length" class="modal-backdrop" @click.self="closeModal">
     <div class="modal-card">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-hair sticky top-0" style="background:var(--surface); border-radius:18px 18px 0 0;">
+      <div class="hidden sm:flex items-center justify-between px-5 py-4 border-b border-hair sticky top-0" style="background:var(--surface); border-radius:18px 18px 0 0;">
         <button v-if="modalStack.length>1" @click="goBack" class="text-sm text-dim font-display font-600">← Back</button>
         <span v-else></span>
         <button @click="closeModal" class="w-7 h-7 rounded-full surface-2 flex items-center justify-center text-sm">✕</button>
       </div>
+      <button v-if="modalStack.length>1" @click="goBack" class="modal-back-mobile sm:hidden w-8 h-8 rounded-full surface-2 flex items-center justify-center text-sm shadow-lg">←</button>
+      <button @click="closeModal" class="modal-close-mobile sm:hidden w-8 h-8 rounded-full surface-2 flex items-center justify-center text-sm shadow-lg">✕</button>
 
       <!-- manager profile -->
       <div v-if="currentModal.type==='manager' && modalManager" class="p-5 space-y-5">
@@ -1168,8 +1177,9 @@ createApp({
     // ---------- league table ----------
     const managers = managersRaw;
     function rankDelta(m){ return m.lastRank - m.rank; }
-    const leagueGwAvg = computed(() => Math.round(managers.reduce((s,m)=>s+m.eventTotal,0)/managers.length));
-    const leagueGwHighest = computed(() => Math.max(...managers.map(m=>m.eventTotal)));
+    function pointsForStatsGw(m){ const h = m.gwHistory.find(x=>x.event===meta.statsGw); return h ? h.points : m.eventTotal; }
+    const leagueGwAvg = computed(() => Math.round(managers.reduce((s,m)=>s+pointsForStatsGw(m),0)/managers.length));
+    const leagueGwHighest = computed(() => Math.max(...managers.map(pointsForStatsGw)));
 
     function sparkPoints(history, w=80, h=26){
       if (!history || history.length===0) return '';
