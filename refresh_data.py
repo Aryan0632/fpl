@@ -102,17 +102,6 @@ def main():
     next_ev = next_candidates[0] if next_candidates else current_ev
     horizon_ids = [next_ev["id"] + i for i in range(FIXTURE_HORIZON)]
 
-    # average_entry_score / highest_score only settle once a gameweek's results (and
-    # bonus points) are confirmed. Showing them for a gameweek that's still being
-    # played would mean showing a low, still-forming number that just looks stale or
-    # wrong. So: display the current gameweek's stats once it's actually finished,
-    # otherwise fall back to the most recent finished one until it is.
-    if current_ev["finished"]:
-        display_ev = current_ev
-    else:
-        prior_finished = [e for e in events if e["finished"] and e["id"] < current_gw]
-        display_ev = prior_finished[-1] if prior_finished else current_ev
-
     # ---------- decide whether this run is even worth doing ----------
     # "Live window": current_gw's matchday span, from its first kickoff to a few
     # hours after its last kickoff (covers the whole matchday, not just the exact
@@ -216,7 +205,12 @@ def main():
         else:
             phases_out.append({"key": p["name"].lower()[:3], "label": p["name"], "start": p["start_event"], "stop": p["stop_event"]})
     for ph in phases_out:
-        ph["status"] = "completed" if ph["stop"] <= current_gw else ("current" if ph["start"] <= current_gw <= ph["stop"] else "upcoming")
+        if ph["start"] <= current_gw <= ph["stop"]:
+            ph["status"] = "current"
+        elif current_gw > ph["stop"]:
+            ph["status"] = "completed"
+        else:
+            ph["status"] = "upcoming"
 
     # ---------- chip windows ----------
     name_counts, chip_windows = {}, []
@@ -315,7 +309,7 @@ def main():
         "refreshIntervalMinutes": refresh_interval_for_ui,
         "currentGw": current_gw, "nextGw": next_ev["id"], "nextDeadline": next_ev.get("deadline_time"),
         "gwFinished": current_ev["finished"], "gwLive": live_window,
-        "statsGw": display_ev["id"], "currentGwAvg": display_ev["average_entry_score"], "currentGwHighest": display_ev["highest_score"],
+        "currentGwAvg": current_ev["average_entry_score"], "currentGwHighest": current_ev["highest_score"],
         "totalFplManagers": bootstrap["total_players"], "mostSelectedId": current_ev.get("most_selected"),
         "mostCaptainedId": current_ev.get("most_captained"), "mostTransferredInId": current_ev.get("most_transferred_in"),
         "horizonGws": horizon_ids, "phases": phases_out, "chipWindows": chip_windows, "upcomingDeadlines": upcoming_deadlines,

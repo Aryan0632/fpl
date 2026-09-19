@@ -232,17 +232,17 @@
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="stat-card">
-          <p class="text-[13px] text-dim font-display font-600 tracking-wide">{{ isLive ? 'GAMEWEEK' : 'NEXT DEADLINE' }}</p>
-          <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--pink)'}">{{ isLive ? ('GW'+meta.currentGw+' live') : countdown }}</p>
-          <p class="text-[13px] text-dim mt-0.5">{{ isLive ? (nextRefreshText || 'waiting on the next data refresh') : ('GW'+meta.nextGw+' · '+formatDeadline) }}</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">NEXT DEADLINE</p>
+          <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--pink)'}">{{ countdown }}</p>
+          <p class="text-[13px] text-dim mt-0.5">GW{{ meta.nextGw }} · {{ formatDeadline }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.statsGw || meta.currentGw }} AVERAGE</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} AVERAGE</p>
           <p class="big-num text-xl sm:text-2xl mt-1">{{ meta.currentGwAvg }}</p>
           <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwAvg }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.statsGw || meta.currentGw }} HIGHEST</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} HIGHEST</p>
           <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--green-ink)'}">{{ meta.currentGwHighest }}</p>
           <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwHighest }}</p>
         </div>
@@ -309,7 +309,7 @@
               <div class="rounded-xl p-3 flex items-center gap-2.5 clickable" style="background:var(--surface-2);" @click="openManager(currentForfeit.stats[0].m.entryId)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 shrink-0" style="color:var(--green-ink)"><path d="M8.5 21h7M12 17v4"/><path d="M7.5 4.5h9V8a4.5 4.5 0 01-9 0V4.5z"/><path d="M7.5 5.5h-2.7a1 1 0 00-1 1.2c.4 2.3 1.8 4 3.9 4.5M16.5 5.5h2.7a1 1 0 011 1.2c-.4 2.3-1.8 4-3.9 4.5"/></svg>
                 <div class="min-w-0">
-                  <p class="text-[11px] text-dim leading-tight">Winner</p>
+                  <p class="text-[11px] text-dim leading-tight">Safe for now</p>
                   <p class="font-display font-700 text-sm truncate u-hover">{{ currentForfeit.stats[0].m.managerName }}</p>
                 </div>
               </div>
@@ -1176,9 +1176,8 @@ createApp({
     // ---------- league table ----------
     const managers = managersRaw;
     function rankDelta(m){ return m.lastRank - m.rank; }
-    function pointsForStatsGw(m){ const h = m.gwHistory.find(x=>x.event===meta.statsGw); return h ? h.points : m.eventTotal; }
-    const leagueGwAvg = computed(() => Math.round(managers.reduce((s,m)=>s+pointsForStatsGw(m),0)/managers.length));
-    const leagueGwHighest = computed(() => Math.max(...managers.map(pointsForStatsGw)));
+    const leagueGwAvg = computed(() => Math.round(managers.reduce((s,m)=>s+m.eventTotal,0)/managers.length));
+    const leagueGwHighest = computed(() => Math.max(...managers.map(m=>m.eventTotal)));
 
     function sparkPoints(history, w=80, h=26){
       if (!history || history.length===0) return '';
