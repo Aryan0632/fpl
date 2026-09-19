@@ -100,18 +100,20 @@ def main():
     horizon_ids = [next_ev["id"] + i for i in range(FIXTURE_HORIZON)]
 
     # ---------- decide whether this run is even worth doing ----------
-    # "Live window": the earliest not-yet-finished gameweek, from its first kickoff
-    # to a few hours after its last kickoff (covers the whole matchday, not just
-    # the exact minutes a ball is in play).
+    # "Live window": current_gw's matchday span, from its first kickoff to a few
+    # hours after its last kickoff (covers the whole matchday, not just the exact
+    # minutes a ball is in play). This is keyed off current_gw (FPL's own
+    # is_current flag, already resolved above) rather than "the earliest event
+    # not yet flagged finished": that finished flag can lag for a while after a
+    # gameweek's last match while bonus points are being confirmed, which would
+    # otherwise leave this stuck pointing at a gameweek that's already over
+    # instead of the one that's actually being played right now.
     now = datetime.now(timezone.utc)
-    unfinished = [e for e in events if not e["finished"]]
+    kickoffs = [datetime.fromisoformat(f["kickoff_time"].replace("Z", "+00:00"))
+                for f in fixtures if f.get("event") == current_gw and f.get("kickoff_time")]
     live_window = False
-    if unfinished:
-        active_gw = unfinished[0]["id"]
-        kickoffs = [datetime.fromisoformat(f["kickoff_time"].replace("Z", "+00:00"))
-                    for f in fixtures if f.get("event") == active_gw and f.get("kickoff_time")]
-        if kickoffs:
-            live_window = min(kickoffs) <= now <= max(kickoffs) + timedelta(hours=LIVE_WINDOW_BUFFER_HOURS)
+    if kickoffs:
+        live_window = min(kickoffs) <= now <= max(kickoffs) + timedelta(hours=LIVE_WINDOW_BUFFER_HOURS)
 
     prev_meta = read_existing_meta()
     minutes_since_last = None
@@ -184,6 +186,8 @@ def main():
             "form": form, "ppg": ppg, "totalPoints": e["total_points"], "selPct": safe_float(e["selected_by_percent"]),
             "epNext": ep_next, "xg": safe_float(e.get("expected_goals")), "xa": safe_float(e.get("expected_assists")),
             "xgi": safe_float(e.get("expected_goal_involvements")), "pred1": pred1, "pred5": pred5, "value5": value5,
+            "influence": safe_float(e.get("influence")), "creativity": safe_float(e.get("creativity")),
+            "threat": safe_float(e.get("threat")), "ictIndex": safe_float(e.get("ict_index")),
             "fixturesNext5": fx,
         })
     players_by_id = {p["id"]: p for p in players_out}
@@ -222,10 +226,14 @@ def main():
         picks_d = get_json(f"/entry/{mid}/event/{current_gw}/picks/")
         hist_d = get_json(f"/entry/{mid}/history/")
         transfers_d = get_json(f"/entry/{mid}/transfers/")
+        entry_d = get_json(f"/entry/{mid}/")
         st = next(r for r in league["standings"]["results"] if r["entry"] == mid)
         if not (picks_d and hist_d):
             print(f"WARNING: skipping manager {mid}, core data unavailable", file=sys.stderr)
             continue
+
+        fav_team_id = entry_d.get("favourite_team") if entry_d else None
+        favourite_team = teams_by_id.get(fav_team_id, {}).get("short_name") if fav_team_id else None
 
         squad = [{"id": p["element"], "slot": p["position"], "starter": p["multiplier"] > 0,
                   "captain": p["is_captain"], "vice": p["is_vice_captain"]} for p in picks_d["picks"]]
@@ -258,6 +266,7 @@ def main():
             "entryId": mid, "managerName": st["player_name"], "teamName": st["entry_name"], "rank": st["rank"],
             "lastRank": st["last_rank"], "total": st["total"], "eventTotal": st["event_total"],
             "bank": eh["bank"]/10.0, "teamValue": eh["value"]/10.0, "activeChip": picks_d.get("active_chip"),
+            "favouriteTeam": favourite_team,
             "chipsUsed": hist_d["chips"], "gwHistory": gw_history, "squad": squad,
             "monthlyPoints": monthly, "chipStatus": chip_status, "transfers": transfers,
         })
@@ -295,6 +304,7 @@ def main():
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "refreshIntervalMinutes": refresh_interval_for_ui,
         "currentGw": current_gw, "nextGw": next_ev["id"], "nextDeadline": next_ev.get("deadline_time"),
+        "gwFinished": current_ev["finished"], "gwLive": live_window,
         "currentGwAvg": current_ev["average_entry_score"], "currentGwHighest": current_ev["highest_score"],
         "totalFplManagers": bootstrap["total_players"], "mostSelectedId": current_ev.get("most_selected"),
         "mostCaptainedId": current_ev.get("most_captained"), "mostTransferredInId": current_ev.get("most_transferred_in"),

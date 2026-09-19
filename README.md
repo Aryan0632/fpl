@@ -58,6 +58,7 @@ FPL's API doesn't send CORS headers, so a browser can never call it directly fro
 
 ## Customising
 
+- **Club crests**: by default every club shows as a small coloured circle with its short code (e.g. "BRE"). To use real badges instead, create a `badges/` folder next to `index.html` and drop in a PNG named after each club's short code — `badges/ARS.png`, `badges/BRE.png`, `badges/MCI.png`, and so on (the same codes already shown in the dashboard today, and the ones `refresh_data.py` prints via each team's `short_name`). You don't need all 20 at once — any club without a matching file just falls back to the coloured circle automatically, and player rows pick up the same crest as a small badge in the corner of their avatar. Keep the images reasonably small (a few KB each) since they're fetched over the network. Because badges aren't official club-colour data from the FPL API, sourcing and rights for the images are on you — this just wires up the display.
 - **Forfeit tracker eligibility / house rules**: near the top of the big `<script>` block in `index.html`, the `FORFEITS` array and `FORFEIT_ENTRY_IDS` list. Edit directly.
 - **Styling**: CSS custom properties (`--purple`, `--pink`, `--green`, etc.) at the top of the `<style>` block. Font is Inter throughout.
 - **Prediction model**: the points-projection formula lives in `refresh_data.py` (search for `pred1_raw` / `pred5_raw`) — it's a documented heuristic (form + points-per-game + official fixture difficulty + FPL's own `ep_next`), not a trained model.

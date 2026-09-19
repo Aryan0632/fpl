@@ -57,11 +57,14 @@
   body{font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
   /* Safe-area support: keeps content clear of the notch/Dynamic Island and
      home-indicator when this is added to the iOS home screen (standalone mode). */
-  header.brand-gradient{ padding-top: env(safe-area-inset-top); }
+  header.app-header{ padding-top: env(safe-area-inset-top); }
+  .mobile-theme-btn{ top: calc(0.75rem + env(safe-area-inset-top, 0px)); right: 0.75rem; }
+  .main-content{ padding-top: calc(4rem + env(safe-area-inset-top, 0px)) !important; }
+  @media (min-width:640px){ .main-content{ padding-top: 1.25rem !important; } }
   footer{ padding-bottom: env(safe-area-inset-bottom); }
   .clickable:active{ background: var(--surface-2); }
   @media (hover: none){
-    .toggle-btn:active, .tab-btn:active{ opacity: 0.7; }
+    .toggle-btn:active, .nav-tab:active{ opacity: 0.7; }
   }
   .font-display{font-family:'Inter',sans-serif;}
   ::selection{background:var(--pink); color:#fff;}
@@ -70,27 +73,58 @@
   .surface-3{background:var(--surface-3);}
   .text-dim{color:var(--text-dim);}
   .border-hair{border-color:var(--border);}
-  .brand-gradient{ background: linear-gradient(120deg, var(--purple) 0%, #5A1263 55%, var(--pink) 130%); }
-  :root[data-theme="light"] .brand-gradient, :root:not([data-theme="dark"]) .brand-gradient{
-    background: linear-gradient(120deg, var(--purple) 0%, #5A1263 60%, var(--pink) 140%);
+  .app-header{ background: linear-gradient(180deg, var(--purple) 0%, #2C0433 100%); }
+  :root[data-theme="light"] .app-header, :root:not([data-theme="dark"]) .app-header{
+    background: linear-gradient(180deg, var(--purple) 0%, #4A0F52 100%);
   }
-  .tab-btn{
-    position:relative; font-family:'Inter',sans-serif; font-weight:600; font-size:0.8rem;
-    letter-spacing:0.01em; padding:0.55rem 0.15rem; color:var(--text-dim); white-space:nowrap;
-    border-bottom:2px solid transparent; transition:color .15s ease, border-color .15s ease;
-    display:inline-flex; align-items:center; min-height:2.75rem;
+  /* Desktop / tablet nav: big, plain, left-to-right — closer to a real sports-site nav than a cramped tab strip */
+  .nav-tab{
+    position:relative; font-family:'Inter',sans-serif; font-weight:700; font-size:0.98rem;
+    letter-spacing:0.01em; padding:1rem 1.15rem; color:rgba(255,255,255,0.7); white-space:nowrap;
+    border-bottom:3px solid transparent; transition:color .15s ease, border-color .15s ease;
+    display:inline-flex; align-items:center;
   }
-  .tab-btn:hover{ color:var(--text); }
-  .tab-btn.active{ color:var(--pink); border-color:var(--pink); }
+  .nav-tab:hover{ color:#fff; }
+  .nav-tab.active{ color:#fff; border-color:var(--pink); }
+  /* Mobile bottom tab bar: fixed, frosted-glass style, safe-area aware */
+  .bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:40; display:flex; align-items:stretch;
+    background:rgba(244,241,247,0.86); backdrop-filter:blur(22px) saturate(180%); -webkit-backdrop-filter:blur(22px) saturate(180%);
+    border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom, 0px);
+    box-shadow:0 -2px 20px rgba(28,14,34,0.08);
+  }
+  :root:not([data-theme="light"]) .bottom-nav{ background:rgba(23,3,33,0.82); }
+  :root[data-theme="dark"] .bottom-nav{ background:rgba(23,3,33,0.82); }
+  .bottom-nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    padding:0.5rem 0.2rem 0.35rem; color:var(--text-dim); font-family:'Inter',sans-serif; font-weight:600; font-size:0.64rem;
+    min-height:56px;
+  }
+  .bottom-nav-item svg{ width:22px; height:22px; stroke-width:2; }
+  .bottom-nav-item.active{ color:var(--pink); }
+  .more-sheet-backdrop{ position:fixed; inset:0; background:rgba(10,2,14,0.55); z-index:45; display:flex; align-items:flex-end; }
+  .more-sheet{
+    background:var(--surface); width:100%; border-radius:20px 20px 0 0;
+    padding:0.6rem 0.5rem calc(1.1rem + env(safe-area-inset-bottom, 0px)); box-shadow:0 -6px 28px rgba(0,0,0,0.22);
+  }
+  .more-sheet-grabber{ width:36px; height:4px; border-radius:99px; background:var(--surface-3); margin:0.4rem auto 0.7rem; }
+  .more-sheet-item{
+    display:flex; align-items:center; gap:0.8rem; padding:0.9rem 1rem; border-radius:12px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:1rem;
+  }
+  .more-sheet-item.active{ color:var(--pink); }
+  .more-sheet-item:active{ background:var(--surface-2); }
+  .more-sheet-item svg{ width:21px; height:21px; }
   .pill{ border-radius:999px; }
   .chip-fdr{
     display:inline-flex; align-items:center; justify-content:center; gap:2px;
-    min-width:2.6rem; padding:0.2rem 0.35rem; border-radius:6px; font-size:0.68rem; font-weight:700; line-height:1.1;
+    min-width:2.6rem; padding:0.2rem 0.35rem; border-radius:6px; font-size:0.7rem; font-weight:700; line-height:1.1;
   }
   .fdr-1{ background:var(--fdr1); color:#04160D; } .fdr-2{ background:var(--fdr2); color:#04160D; }
   .fdr-3{ background:var(--fdr3); color:#0C0311; } .fdr-4{ background:var(--fdr4); color:#1D0A00; }
   .fdr-5{ background:var(--fdr5); color:#1D0000; }
   .badge-circle{ display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; color:#fff; font-family:'Inter',sans-serif; font-weight:700; flex-shrink:0; }
+  .badge-img{ object-fit:contain; flex-shrink:0; border-radius:4px; background:var(--surface-2); padding:1px; }
   .font-500{ font-weight:500; } .font-600{ font-weight:600; } .font-700{ font-weight:700; } .font-800{ font-weight:800; }
   .clickable{ cursor:pointer; }
   .clickable:hover .u-hover, .clickable.u-hover:hover{ text-decoration:underline; text-decoration-color:var(--pink); text-decoration-thickness:1.5px; }
@@ -123,6 +157,36 @@
   .chip-expired{ background:transparent; border:1px dashed var(--border); color:var(--text-dim); }
   .live-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:#00FF87; box-shadow:0 0 0 0 rgba(0,255,135,0.7); animation:pulse 1.6s infinite; }
   @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(0,255,135,0.55);} 70%{box-shadow:0 0 0 8px rgba(0,255,135,0);} 100%{box-shadow:0 0 0 0 rgba(0,255,135,0);} }
+  .pitch{
+    position:relative; border-radius:16px; overflow:hidden; padding:16px 6px 12px;
+    background: repeating-linear-gradient(to bottom, #16803f 0, #16803f 12.5%, #1a9048 12.5%, #1a9048 25%);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.14);
+  }
+  .pitch-lines{ position:absolute; inset:10px; border:2px solid rgba(255,255,255,0.3); border-radius:8px; pointer-events:none; }
+  .pitch-lines::before{ content:''; position:absolute; top:50%; left:50%; width:64px; height:64px; margin:-32px 0 0 -32px; border:2px solid rgba(255,255,255,0.3); border-radius:50%; }
+  .pitch-lines::after{ content:''; position:absolute; top:50%; left:0; right:0; height:2px; background:rgba(255,255,255,0.3); }
+  .pitch-row{ display:flex; justify-content:space-evenly; align-items:flex-start; gap:2px; margin:12px 0; position:relative; z-index:1; }
+  .pitch-card{ display:flex; flex-direction:column; align-items:center; gap:3px; width:66px; cursor:pointer; }
+  .pitch-card-badge-wrap{ position:relative; }
+  .pitch-card-name{
+    font-size:0.66rem; font-weight:700; color:#fff; background:rgba(8,18,10,0.6); padding:1px 6px; border-radius:6px;
+    white-space:nowrap; max-width:68px; overflow:hidden; text-overflow:ellipsis; font-family:'Inter',sans-serif;
+  }
+  .pitch-card-score{ font-size:0.62rem; font-weight:800; color:#0C0311; background:#fff; padding:1px 6px; border-radius:5px; }
+  .pitch-armband{
+    position:absolute; top:-5px; right:-5px; width:17px; height:17px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:800;
+    background:var(--pink); color:#fff; box-shadow:0 0 0 2px #fff; font-family:'Inter',sans-serif;
+  }
+  .pitch-armband.vice{ background:#fff; color:var(--purple); }
+  .pitch-bench{ margin-top:12px; padding-top:12px; border-top:2px dashed var(--border); }
+  .pitch-bench-row{ display:flex; gap:10px; overflow-x:auto; padding-bottom:2px; }
+  .pitch-bench-card{ display:flex; flex-direction:column; align-items:center; gap:3px; width:58px; shrink:0; flex-shrink:0; cursor:pointer; }
+  .pitch-bench-name{ font-size:0.62rem; font-weight:600; color:var(--text); max-width:58px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:'Inter',sans-serif; }
+  @media (max-width:400px){
+    .pitch-card{ width:54px; } .pitch-card-name{ max-width:56px; font-size:0.6rem; }
+    .pitch-bench-card{ width:50px; } .pitch-bench-name{ max-width:50px; }
+  }
   .modal-backdrop{ position:fixed; inset:0; background:rgba(10,2,14,0.62); backdrop-filter:blur(2px); z-index:50; display:flex; justify-content:center; padding:1rem; overflow-y:auto; }
   .modal-card{ background:var(--surface); border-radius:18px; max-width:680px; width:100%; height:fit-content; margin-top:2.5rem; margin-bottom:2.5rem; box-shadow:var(--shadow); }
   a{ color:inherit; }
@@ -134,55 +198,57 @@
 <body class="font-body min-h-screen">
 <div id="app" v-cloak>
 
-  <header class="brand-gradient text-white sticky top-0 z-30 shadow-lg">
+  <header class="app-header text-white sticky top-0 z-30 shadow-lg hidden sm:block">
     <div class="max-w-6xl mx-auto px-4 pt-4 pb-0">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center text-lg shrink-0">⚽</div>
           <div class="min-w-0">
             <p class="font-display font-700 text-base sm:text-lg leading-tight truncate">{{ meta.leagueName }}</p>
-            <p class="text-[11px] text-white/70 leading-tight">Mini-League #{{ meta.leagueId }} · FPL Command Centre<span v-if="nextRefreshText"> · {{ nextRefreshText }}</span></p>
+            <p class="text-[13px] text-white/70 leading-tight">Mini-League #{{ meta.leagueId }} · FPL Command Centre<span v-if="nextRefreshText"> · {{ nextRefreshText }}</span></p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <span v-if="isLive" class="inline-flex items-center gap-1.5 pill bg-white/15 px-3 py-1 text-xs font-display font-600">
-            <span class="live-dot"></span> GW{{ meta.nextGw }} live
+            <span class="live-dot"></span> GW{{ meta.currentGw }} live
           </span>
           <span v-else class="hidden sm:inline-flex items-center gap-1 pill bg-white/15 px-3 py-1 text-xs font-display font-600">GW{{ meta.currentGw }} done</span>
           <button @click="toggleTheme" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-sm transition" :title="theme==='dark' ? 'Switch to light' : 'Switch to dark'">{{ theme==='dark' ? '☀️' : '🌙' }}</button>
         </div>
       </div>
-      <nav class="flex gap-4 mt-4 overflow-x-auto no-scrollbar">
-        <button v-for="t in tabs" :key="t.id" @click="setTab(t.id)" class="tab-btn" :class="{active: activeTab===t.id}">{{ t.label }}</button>
+      <nav class="hidden sm:flex gap-1 mt-3 overflow-x-auto no-scrollbar">
+        <button v-for="t in tabs" :key="t.id" @click="setTab(t.id)" class="nav-tab" :class="{active: activeTab===t.id}">{{ t.label }}</button>
       </nav>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-5 space-y-6">
+  <button @click="toggleTheme" class="sm:hidden fixed z-30 w-10 h-10 rounded-full surface shadow-lg flex items-center justify-center text-base mobile-theme-btn" :title="theme==='dark' ? 'Switch to light' : 'Switch to dark'">{{ theme==='dark' ? '☀️' : '🌙' }}</button>
+
+  <main class="main-content max-w-6xl mx-auto px-4 pt-5 pb-28 sm:pb-5 space-y-6">
 
     <!-- ============ HOME ============ -->
     <section v-show="activeTab==='home'" class="space-y-5">
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="stat-card">
-          <p class="text-[11px] text-dim font-display font-600 tracking-wide">{{ isLive ? 'GAMEWEEK' : 'NEXT DEADLINE' }}</p>
-          <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--pink)'}">{{ isLive ? ('GW'+meta.nextGw+' live') : countdown }}</p>
-          <p class="text-[11px] text-dim mt-0.5">{{ isLive ? (nextRefreshText || 'waiting on the next data refresh') : ('GW'+meta.nextGw+' · '+formatDeadline) }}</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">{{ isLive ? 'GAMEWEEK' : 'NEXT DEADLINE' }}</p>
+          <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--pink)'}">{{ isLive ? ('GW'+meta.currentGw+' live') : countdown }}</p>
+          <p class="text-[13px] text-dim mt-0.5">{{ isLive ? (nextRefreshText || 'waiting on the next data refresh') : ('GW'+meta.nextGw+' · '+formatDeadline) }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[11px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} AVERAGE</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} AVERAGE</p>
           <p class="big-num text-xl sm:text-2xl mt-1">{{ meta.currentGwAvg }}</p>
-          <p class="text-[11px] text-dim mt-0.5">your league: {{ leagueGwAvg }}</p>
+          <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwAvg }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[11px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} HIGHEST</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GW{{ meta.currentGw }} HIGHEST</p>
           <p class="big-num text-xl sm:text-2xl mt-1" :style="{color:'var(--green-ink)'}">{{ meta.currentGwHighest }}</p>
-          <p class="text-[11px] text-dim mt-0.5">your league: {{ leagueGwHighest }}</p>
+          <p class="text-[13px] text-dim mt-0.5">your league: {{ leagueGwHighest }}</p>
         </div>
         <div class="stat-card">
-          <p class="text-[11px] text-dim font-display font-600 tracking-wide">GLOBAL POPULATION</p>
+          <p class="text-[13px] text-dim font-display font-600 tracking-wide">GLOBAL POPULATION</p>
           <p class="big-num text-xl sm:text-2xl mt-1">{{ formatMillions(meta.totalFplManagers) }}</p>
-          <p class="text-[11px] text-dim mt-0.5">managers playing FPL</p>
+          <p class="text-[13px] text-dim mt-0.5">managers playing FPL</p>
         </div>
       </div>
 
@@ -195,7 +261,7 @@
           <div v-for="m in managers.slice(0,6)" :key="m.entryId" class="flex items-center justify-between py-1.5 border-b last:border-0 border-hair">
             <div class="flex items-center gap-2 min-w-0 clickable" @click="openManager(m.entryId)">
               <span class="font-display font-700 w-4 text-sm">{{ m.rank }}</span>
-              <div class="badge-circle w-7 h-7 text-[9px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div>
+              <div class="badge-circle w-7 h-7 text-[11px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div>
               <span class="text-sm truncate u-hover">{{ m.teamName }}</span>
             </div>
             <span class="font-display font-600 text-sm shrink-0">{{ m.total }}</span>
@@ -215,11 +281,11 @@
           <div class="flex items-center justify-between mb-1">
             <p class="font-display font-700">Best captain picks — GW{{ meta.nextGw }}</p>
           </div>
-          <p class="text-[11px] text-dim mb-2">Our model's top predicted scorers next gameweek.</p>
+          <p class="text-[13px] text-dim mb-2">Our model's top predicted scorers next gameweek.</p>
           <div v-for="(p,i) in topCaptainPicks" :key="p.id" class="flex items-center justify-between py-1.5 border-b last:border-0 border-hair clickable" @click="openPlayer(p.id)">
             <div class="flex items-center gap-2 min-w-0">
               <span class="text-dim text-xs w-3">{{ i+1 }}</span>
-              <div class="badge-circle w-7 h-7 text-[9px]" :style="{background: teamColor(p.teamShort)}">{{ p.teamShort }}</div>
+              <team-badge :short="p.teamShort" size="w-7 h-7" text="text-[11px]"></team-badge>
               <span class="text-sm truncate font-display font-600 u-hover">{{ p.web }}</span>
               <span v-if="p.nextOpp" class="chip-fdr" :class="'fdr-'+p.nextOpp.fdr">{{ p.nextOpp.opp }}</span>
             </div>
@@ -228,18 +294,35 @@
         </div>
 
         <div class="surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
-          <p class="font-display font-700 mb-1">Forfeit spotlight</p>
-          <template v-if="currentForfeit">
-            <p class="text-[11px] text-dim mb-2">{{ currentForfeit.phase.label }} · {{ currentForfeit.phase.status==='current' ? 'in progress' : 'upcoming' }}</p>
-            <p class="font-display font-600 text-sm mb-1">{{ currentForfeit.forfeit.title }}</p>
-            <p class="text-xs text-dim mb-3">{{ currentForfeit.forfeit.desc }}</p>
-            <div v-if="currentForfeit.stats[0].gws>0" class="flex items-center justify-between text-xs">
-              <span>🏆 on track: <b>{{ currentForfeit.stats[0].m.teamName }}</b></span>
-              <span>😬 on track: <b>{{ currentForfeit.stats[currentForfeit.stats.length-1].m.teamName }}</b></span>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:var(--surface-2);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-[18px] h-[18px]" style="color:var(--pink)"><path d="M8.5 21h7M12 17v4"/><path d="M7.5 4.5h9V8a4.5 4.5 0 01-9 0V4.5z"/><path d="M7.5 5.5h-2.7a1 1 0 00-1 1.2c.4 2.3 1.8 4 3.9 4.5M16.5 5.5h2.7a1 1 0 011 1.2c-.4 2.3-1.8 4-3.9 4.5"/></svg>
             </div>
-            <div v-else class="text-xs text-dim">Not started yet.</div>
-            <p class="text-[10px] text-dim mt-1.5">Among the four in this bet.</p>
-            <button @click="setTab('forfeits')" class="mt-3 text-xs font-display font-600" style="color:var(--pink)">See all forfeits →</button>
+            <p class="font-display font-700">Forfeit spotlight</p>
+          </div>
+          <template v-if="currentForfeit">
+            <p class="text-sm text-dim mb-2">{{ currentForfeit.phase.label }} · {{ currentForfeit.phase.status==='current' ? 'in progress' : 'upcoming' }}</p>
+            <p class="font-display font-700 text-base mb-1">{{ currentForfeit.forfeit.title }}</p>
+            <p class="text-sm text-dim mb-3">{{ currentForfeit.forfeit.desc }}</p>
+            <div v-if="currentForfeit.stats[0].gws>0" class="grid grid-cols-2 gap-2">
+              <div class="rounded-xl p-3 flex items-center gap-2.5 clickable" style="background:var(--surface-2);" @click="openManager(currentForfeit.stats[0].m.entryId)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 shrink-0" style="color:var(--green-ink)"><path d="M8.5 21h7M12 17v4"/><path d="M7.5 4.5h9V8a4.5 4.5 0 01-9 0V4.5z"/><path d="M7.5 5.5h-2.7a1 1 0 00-1 1.2c.4 2.3 1.8 4 3.9 4.5M16.5 5.5h2.7a1 1 0 011 1.2c-.4 2.3-1.8 4-3.9 4.5"/></svg>
+                <div class="min-w-0">
+                  <p class="text-[11px] text-dim leading-tight">Safe for now</p>
+                  <p class="font-display font-700 text-sm truncate u-hover">{{ currentForfeit.stats[0].m.managerName }}</p>
+                </div>
+              </div>
+              <div class="rounded-xl p-3 flex items-center gap-2.5 clickable" style="background:var(--surface-2);" @click="openManager(currentForfeit.stats[currentForfeit.stats.length-1].m.entryId)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 shrink-0" style="color:var(--fdr5)"><path d="M10.3 3.9L2.6 18a1.8 1.8 0 001.5 2.7h15.8a1.8 1.8 0 001.5-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z"/><path d="M12 9.3v4"/><circle cx="12" cy="16.4" r="0.65" fill="currentColor" stroke="none"/></svg>
+                <div class="min-w-0">
+                  <p class="text-[11px] text-dim leading-tight">On the hook</p>
+                  <p class="font-display font-700 text-sm truncate u-hover">{{ currentForfeit.stats[currentForfeit.stats.length-1].m.managerName }}</p>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-sm text-dim">Not started yet.</div>
+            <p class="text-[12px] text-dim mt-2">Among the four in this bet.</p>
+            <button @click="setTab('forfeits')" class="mt-3 text-sm font-display font-600" style="color:var(--pink)">See all forfeits →</button>
           </template>
         </div>
       </div>
@@ -257,7 +340,7 @@
           <p class="font-display font-700 mb-2">Kindest run right now</p>
           <div v-for="t in sortedTeams.slice(0,4)" :key="t.id" class="flex items-center justify-between py-1 text-sm">
             <div class="flex items-center gap-2">
-              <div class="badge-circle w-6 h-6 text-[8px]" :style="{background: teamColor(t.short)}">{{ t.short }}</div>
+              <team-badge :short="t.short" size="w-6 h-6" text="text-[10px]"></team-badge>
               <span>{{ t.name }}</span>
             </div>
             <span class="font-display font-600" style="color:var(--green-ink)">{{ t.avgFdr5.toFixed(1) }} avg FDR</span>
@@ -281,12 +364,12 @@
       <div class="surface rounded-2xl overflow-hidden" style="box-shadow:var(--shadow);">
         <div class="px-4 sm:px-5 py-3 flex items-center justify-between border-b border-hair">
           <span class="text-xs text-dim">{{ tableFilterLabel }}</span>
-          <span class="text-[11px] text-dim">updated {{ formatGenerated }}</span>
+          <span class="text-[13px] text-dim">updated {{ formatGenerated }}</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="text-left text-dim text-[11px] font-display font-600 tracking-wide">
+              <tr class="text-left text-dim text-[13px] font-display font-600 tracking-wide">
                 <th class="px-3 sm:px-5 py-2">#</th>
                 <th class="px-2 py-2">Manager</th>
                 <th class="px-2 py-2 text-center hidden sm:table-cell">Form</th>
@@ -299,9 +382,9 @@
                   <div class="flex items-center gap-1.5">
                     <span class="font-display font-700 text-base">{{ row.rank }}</span>
                     <template v-if="tableFilter==='total'">
-                      <span v-if="rankDelta(row.m) > 0" class="text-[11px]" style="color:var(--green-ink);">▲{{ rankDelta(row.m) }}</span>
-                      <span v-else-if="rankDelta(row.m) < 0" class="text-[11px]" style="color:var(--fdr5);">▼{{ -rankDelta(row.m) }}</span>
-                      <span v-else class="text-[11px] text-dim">—</span>
+                      <span v-if="rankDelta(row.m) > 0" class="text-[13px]" style="color:var(--green-ink);">▲{{ rankDelta(row.m) }}</span>
+                      <span v-else-if="rankDelta(row.m) < 0" class="text-[13px]" style="color:var(--fdr5);">▼{{ -rankDelta(row.m) }}</span>
+                      <span v-else class="text-[13px] text-dim">—</span>
                     </template>
                   </div>
                 </td>
@@ -310,10 +393,10 @@
                     <div class="badge-circle w-9 h-9 text-xs" :style="{background: managerColor(row.m.entryId)}">{{ initials(row.m.teamName) }}</div>
                     <div class="min-w-0">
                       <p class="font-display font-600 truncate u-hover">{{ row.m.teamName }}</p>
-                      <p class="text-[11px] text-dim truncate u-hover">{{ row.m.managerName }}</p>
+                      <p class="text-[13px] text-dim truncate u-hover">{{ row.m.managerName }}</p>
                     </div>
                     <div class="hidden md:flex items-center gap-1 ml-1">
-                      <span v-for="c in row.m.chipsUsed" :key="c.event+c.name" class="text-[9px] px-1.5 py-0.5 rounded surface-2 text-dim font-display font-600">{{ chipShort(c.name) }}</span>
+                      <span v-for="c in row.m.chipsUsed" :key="c.event+c.name" class="text-[11px] px-1.5 py-0.5 rounded surface-2 text-dim font-display font-600">{{ chipShort(c.name) }}</span>
                     </div>
                   </div>
                 </td>
@@ -329,7 +412,7 @@
           </table>
         </div>
       </div>
-      <p class="text-[11px] text-dim px-1">Season view uses official FPL rank/movement. Month and form views are re-ranked here from raw gameweek points.</p>
+      <p class="text-[13px] text-dim px-1">Season view uses official FPL rank/movement. Month and form views are re-ranked here from raw gameweek points.</p>
     </section>
 
     <!-- ============ FIXTURE RUN ============ -->
@@ -337,7 +420,7 @@
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 class="font-display font-700 text-lg">Fixture Difficulty — next 5</h2>
-          <p class="text-[11px] text-dim">GW{{ meta.nextGw }}–GW{{ meta.horizonGws[meta.horizonGws.length-1] }}, official FPL FDR (1 easiest → 5 hardest)</p>
+          <p class="text-[13px] text-dim">GW{{ meta.nextGw }}–GW{{ meta.horizonGws[meta.horizonGws.length-1] }}, official FPL FDR (1 easiest → 5 hardest)</p>
         </div>
         <div class="flex gap-2">
           <button class="toggle-btn" :class="{active: fdrSort==='easy'}" @click="fdrSort='easy'">Easiest first</button>
@@ -349,12 +432,12 @@
         <div v-for="t in sortedTeams" :key="t.id" class="surface rounded-xl p-3" style="box-shadow:var(--shadow);">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <div class="badge-circle w-8 h-8 text-[10px]" :style="{background: teamColor(t.short)}">{{ t.short }}</div>
+              <team-badge :short="t.short" size="w-8 h-8" text="text-[12px]"></team-badge>
               <span class="font-display font-600 text-sm">{{ t.name }}</span>
             </div>
             <div class="text-right">
-              <p class="font-display font-700 text-sm">{{ t.avgFdr5.toFixed(1) }} <span class="text-[10px] text-dim font-normal">avg FDR</span></p>
-              <p class="text-[10px] text-dim">run score {{ t.runScore5 }}</p>
+              <p class="font-display font-700 text-sm">{{ t.avgFdr5.toFixed(1) }} <span class="text-[12px] text-dim font-normal">avg FDR</span></p>
+              <p class="text-[12px] text-dim">run score {{ t.runScore5 }}</p>
             </div>
           </div>
           <div class="flex flex-wrap gap-1.5">
@@ -371,7 +454,7 @@
             <thead><tr><th>Team</th><th v-for="g in meta.horizonGws" :key="g">GW{{ g }}</th><th>Avg FDR</th><th>Run score</th></tr></thead>
             <tbody>
               <tr v-for="t in sortedTeams" :key="t.id">
-                <td><div class="flex items-center gap-2"><div class="badge-circle w-7 h-7 text-[10px]" :style="{background: teamColor(t.short)}">{{ t.short }}</div><span class="font-display font-600 hidden sm:inline">{{ t.name }}</span></div></td>
+                <td><div class="flex items-center gap-2"><team-badge :short="t.short" size="w-7 h-7" text="text-[12px]"></team-badge><span class="font-display font-600 hidden sm:inline">{{ t.name }}</span></div></td>
                 <td v-for="g in meta.horizonGws" :key="g">
                   <template v-if="fixturesForGw(t,g).length">
                     <span v-for="(f,idx) in fixturesForGw(t,g)" :key="idx" class="chip-fdr" :class="'fdr-'+f.fdr">{{ f.opp }}<span class="opacity-60">{{ f.home ? '(H)' : '(A)' }}</span></span>
@@ -385,14 +468,14 @@
           </table>
         </div>
       </div>
-      <p class="text-[11px] text-dim px-1">Run score rewards teams with more fixtures and easier opponents in the window. Higher is better.</p>
+      <p class="text-[13px] text-dim px-1">Run score rewards teams with more fixtures and easier opponents in the window. Higher is better.</p>
     </section>
 
     <!-- ============ PREDICTIONS ============ -->
     <section v-show="activeTab==='predictions'" class="space-y-4">
       <div>
         <h2 class="font-display font-700 text-lg">Player Predictions</h2>
-        <p class="text-[11px] text-dim">Blends form, points-per-game, official fixture difficulty and FPL's own next-GW model. A guide, not gospel. Click any player for a deep dive.</p>
+        <p class="text-[13px] text-dim">Blends form, points-per-game, official fixture difficulty and FPL's own next-GW model. A guide, not gospel. Click any player for a deep dive.</p>
       </div>
       <div class="flex flex-wrap gap-2 items-center">
         <button v-for="p in positions" :key="p" class="toggle-btn" :class="{active: posFilter===p}" @click="posFilter=p">{{ p }}</button>
@@ -404,21 +487,21 @@
         <div v-for="p in filteredPlayers" :key="p.id" class="surface rounded-xl p-3 clickable" style="box-shadow:var(--shadow);" @click="openPlayer(p.id)">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2 min-w-0">
-              <div class="badge-circle w-8 h-8 text-[9px]" :style="{background: teamColor(p.teamShort)}">{{ p.teamShort }}</div>
+              <team-badge :short="p.teamShort" size="w-9 h-9" text="text-[12px]"></team-badge>
               <div class="min-w-0">
                 <p class="font-display font-600 text-sm truncate">{{ p.web }}</p>
-                <p class="text-[10px]" :style="{color: p.status!=='a' ? 'var(--fdr5)' : 'var(--text-dim)'}">{{ p.status!=='a' ? (p.news || statusLabel(p.status)) : (p.pos+' · £'+p.cost.toFixed(1)+'m') }}</p>
+                <p class="text-[12px]" :style="{color: p.status!=='a' ? 'var(--fdr5)' : 'var(--text-dim)'}">{{ p.status!=='a' ? (p.news || statusLabel(p.status)) : (p.pos+' · £'+p.cost.toFixed(1)+'m') }}</p>
               </div>
             </div>
             <div class="flex -space-x-1.5 shrink-0">
-              <div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[8px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}">{{ initials(managerName(ownerId)).slice(0,1) }}</div>
+              <div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[10px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}">{{ initials(managerName(ownerId)).slice(0,1) }}</div>
             </div>
           </div>
           <div class="grid grid-cols-4 gap-1.5 text-center">
-            <div><p class="text-[9px] text-dim">Form</p><p class="font-display font-600 text-sm">{{ p.form.toFixed(1) }}</p></div>
-            <div><p class="text-[9px] text-dim">Next GW</p><p class="font-display font-600 text-sm">{{ p.pred1.toFixed(1) }}</p></div>
-            <div><p class="text-[9px] text-dim">Next 5</p><p class="font-display font-700 text-sm" style="color:var(--pink)">{{ p.pred5.toFixed(1) }}</p></div>
-            <div><p class="text-[9px] text-dim">Own%</p><p class="font-display font-600 text-sm">{{ p.selPct.toFixed(1) }}</p></div>
+            <div><p class="text-[11px] text-dim">Form</p><p class="font-display font-600 text-sm">{{ p.form.toFixed(1) }}</p></div>
+            <div><p class="text-[11px] text-dim">Next GW</p><p class="font-display font-600 text-sm">{{ p.pred1.toFixed(1) }}</p></div>
+            <div><p class="text-[11px] text-dim">Next 5</p><p class="font-display font-700 text-sm" style="color:var(--pink)">{{ p.pred5.toFixed(1) }}</p></div>
+            <div><p class="text-[11px] text-dim">Own%</p><p class="font-display font-600 text-sm">{{ p.selPct.toFixed(1) }}</p></div>
           </div>
         </div>
       </div>
@@ -441,7 +524,7 @@
             </thead>
             <tbody>
               <tr v-for="p in filteredPlayers" :key="p.id" class="clickable" @click="openPlayer(p.id)">
-                <td><div class="flex items-center gap-2"><div class="badge-circle w-7 h-7 text-[9px]" :style="{background: teamColor(p.teamShort)}">{{ p.teamShort }}</div><div class="min-w-0"><p class="font-display font-600 u-hover">{{ p.web }}</p><p v-if="p.status!=='a'" class="text-[10px]" style="color:var(--fdr5)">{{ p.news || statusLabel(p.status) }}</p></div></div></td>
+                <td><div class="flex items-center gap-2"><team-badge :short="p.teamShort" size="w-8 h-8" text="text-[11px]"></team-badge><div class="min-w-0"><p class="font-display font-600 u-hover">{{ p.web }}</p><p v-if="p.status!=='a'" class="text-[12px]" style="color:var(--fdr5)">{{ p.news || statusLabel(p.status) }}</p></div></div></td>
                 <td class="text-dim">{{ p.pos }}</td>
                 <td>{{ p.cost.toFixed(1) }}</td>
                 <td>{{ p.form.toFixed(1) }}</td>
@@ -449,60 +532,67 @@
                 <td class="font-display font-700" style="color:var(--pink)">{{ p.pred5.toFixed(1) }}</td>
                 <td>{{ p.value5.toFixed(1) }}</td>
                 <td>{{ p.selPct.toFixed(1) }}%</td>
-                <td class="hidden md:table-cell"><div class="flex -space-x-1.5"><div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[8px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}" :title="managerName(ownerId)">{{ initials(managerName(ownerId)).slice(0,1) }}</div></div></td>
+                <td class="hidden md:table-cell"><div class="flex -space-x-1.5"><div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[10px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}" :title="managerName(ownerId)">{{ initials(managerName(ownerId)).slice(0,1) }}</div></div></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="text-[11px] text-dim px-1">Showing {{ filteredPlayers.length }} of {{ sortablePlayers.length }} eligible players.</p>
+      <p class="text-[13px] text-dim px-1">Showing {{ filteredPlayers.length }} of {{ sortablePlayers.length }} eligible players.</p>
     </section>
 
     <!-- ============ TRANSFERS ============ -->
     <section v-show="activeTab==='transfers'" class="space-y-5">
       <div>
         <h2 class="font-display font-700 text-lg">Transfer Recommendations</h2>
-        <p class="text-[11px] text-dim">Pick a manager to see their squad's weak links and realistic replacements within budget.</p>
+        <p class="text-[13px] text-dim">Pick a manager to see their squad's weak links and realistic replacements within budget.</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <button v-for="m in managers" :key="m.entryId" class="toggle-btn" :class="{active: selectedManagerId===m.entryId}" @click="selectedManagerId=m.entryId">{{ m.teamName }}</button>
       </div>
       <div v-if="selectedManager" class="grid lg:grid-cols-5 gap-5">
         <div class="lg:col-span-3 surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
-          <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
             <div class="flex items-center gap-2.5 clickable" @click="openManager(selectedManager.entryId)">
               <div class="badge-circle w-9 h-9 text-xs" :style="{background: managerColor(selectedManager.entryId)}">{{ initials(selectedManager.teamName) }}</div>
-              <div><p class="font-display font-700 u-hover">{{ selectedManager.teamName }}</p><p class="text-[11px] text-dim u-hover">{{ selectedManager.managerName }} · Rank {{ selectedManager.rank }} · full profile →</p></div>
-            </div>
-            <div class="text-right"><p class="text-[11px] text-dim">Bank</p><p class="font-display font-700">£{{ selectedManager.bank.toFixed(1) }}m</p></div>
-          </div>
-          <div v-for="grp in squadGroups" :key="grp.pos" class="mb-3">
-            <p class="text-[10px] font-display font-600 tracking-wide text-dim mb-1.5">{{ grp.pos }}</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-              <div v-for="sp in grp.items" :key="sp.id" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg clickable" :class="sp.starter ? 'surface-2' : 'opacity-55'" @click="openPlayer(sp.id)">
-                <div class="flex items-center gap-2 min-w-0">
-                  <div class="badge-circle w-6 h-6 text-[8px]" :style="{background: teamColor(sp.teamShort)}">{{ sp.teamShort }}</div>
-                  <span class="text-sm truncate u-hover">{{ sp.web }}</span>
-                  <span v-if="sp.captain" class="text-[9px] font-display font-700 px-1 rounded" style="background:var(--pink); color:#fff;">C</span>
-                  <span v-else-if="sp.vice" class="text-[9px] font-display font-700 px-1 rounded surface-3 text-dim">V</span>
-                </div>
-                <span class="text-xs font-display font-600 shrink-0" style="color:var(--pink)">{{ sp.pred5.toFixed(0) }}</span>
+              <div>
+                <p class="font-display font-700 u-hover">{{ selectedManager.teamName }}</p>
+                <p class="text-[13px] text-dim u-hover">{{ selectedManager.managerName }} · Rank {{ selectedManager.rank }} · full profile →</p>
               </div>
             </div>
+            <div class="flex items-center gap-3">
+              <div v-if="selectedManager.favouriteTeam" class="flex items-center gap-1.5" :title="'Supports '+teamNameFromShort(selectedManager.favouriteTeam)">
+                <team-badge :short="selectedManager.favouriteTeam" size="w-5 h-5" text="text-[9px]"></team-badge>
+                <span class="text-[11px] text-dim">supports {{ teamNameFromShort(selectedManager.favouriteTeam) }}</span>
+              </div>
+              <div class="text-right"><p class="text-[13px] text-dim">Bank</p><p class="font-display font-700">£{{ selectedManager.bank.toFixed(1) }}m</p></div>
+            </div>
           </div>
+          <div class="flex gap-2 mb-3">
+            <button class="toggle-btn" :class="{active: transfersSquadView==='current'}" @click="transfersSquadView='current'">Current squad</button>
+            <button class="toggle-btn" :class="{active: transfersSquadView==='best'}" @click="transfersSquadView='best'">Best XI · next GW</button>
+          </div>
+          <p v-if="transfersSquadView==='best' && transfersPitch" class="text-[12px] text-dim mb-2">Picked from this manager's own 15, ranked by predicted GW{{ meta.nextGw }} points blended with ICT threat — not just who's currently in their XI. Predicted total incl. captain: <span class="font-display font-700" :style="{color:'var(--pink)'}">{{ transfersPitch.predictedTotal.toFixed(1) }} pts</span>.</p>
+          <squad-pitch v-if="transfersPitch" :starters="transfersPitch.starters" :bench="transfersPitch.bench" :captain-id="transfersPitch.captainId" :vice-id="transfersPitch.viceId" :metric-key="transfersPitch.metricKey" :metric-label="transfersPitch.metricLabel" :formation="transfersPitch.formation" @select="openPlayer"></squad-pitch>
         </div>
         <div class="lg:col-span-2 space-y-4">
           <div class="surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
             <p class="font-display font-700 mb-2">Consider moving on</p>
             <div v-for="wl in weakLinks" :key="wl.id" class="mb-3 last:mb-0 pb-3 last:pb-0 border-b last:border-0 border-hair">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-sm font-display font-600 clickable" @click="openPlayer(wl.id)"><span class="u-hover">{{ wl.web }}</span> <span class="text-dim font-normal">({{ wl.pos }}, £{{ wl.cost.toFixed(1) }}m)</span></span>
-                <span class="text-xs text-dim">{{ wl.pred5.toFixed(1) }} pts/5</span>
+              <div class="flex items-center justify-between mb-1.5 gap-2">
+                <div class="flex items-center gap-1.5 min-w-0 clickable" @click="openPlayer(wl.id)">
+                  <team-badge :short="wl.teamShort" size="w-6 h-6" text="text-[10px]"></team-badge>
+                  <span class="text-sm font-display font-600 truncate"><span class="u-hover">{{ wl.web }}</span> <span class="text-dim font-normal">({{ wl.pos }}, £{{ wl.cost.toFixed(1) }}m)</span></span>
+                </div>
+                <span class="text-xs text-dim shrink-0">{{ wl.pred5.toFixed(1) }} pts/5</span>
               </div>
               <div class="space-y-1">
-                <div v-for="rep in recommendationsFor(wl)" :key="rep.id" class="flex items-center justify-between text-xs px-2 py-1 rounded surface-2 clickable" @click="openPlayer(rep.id)">
-                  <span><span class="u-hover">{{ rep.web }}</span> <span class="text-dim">£{{ rep.cost.toFixed(1) }}m</span></span>
-                  <span class="font-display font-600" style="color:var(--green-ink)">{{ rep.pred5.toFixed(1) }} pts/5</span>
+                <div v-for="rep in recommendationsFor(wl)" :key="rep.id" class="flex items-center justify-between text-xs px-2 py-1 rounded surface-2 clickable gap-2" @click="openPlayer(rep.id)">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <team-badge :short="rep.teamShort" size="w-5 h-5" text="text-[9px]"></team-badge>
+                    <span class="truncate"><span class="u-hover">{{ rep.web }}</span> <span class="text-dim">£{{ rep.cost.toFixed(1) }}m</span></span>
+                  </div>
+                  <span class="font-display font-600 shrink-0" style="color:var(--green-ink)">{{ rep.pred5.toFixed(1) }} pts/5</span>
                 </div>
                 <p v-if="recommendationsFor(wl).length===0" class="text-xs text-dim">No affordable upgrade found in budget.</p>
               </div>
@@ -510,16 +600,22 @@
           </div>
           <div class="surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
             <p class="font-display font-700 mb-2">League-wide bargains</p>
-            <div v-for="b in topValuePicks" :key="b.id" class="flex items-center justify-between text-xs py-1 clickable" @click="openPlayer(b.id)">
-              <span><span class="u-hover">{{ b.web }}</span> <span class="text-dim">{{ b.pos }} · £{{ b.cost.toFixed(1) }}m</span></span>
-              <span class="font-display font-600">{{ b.value5.toFixed(1) }} pts/£m</span>
+            <div v-for="b in topValuePicks" :key="b.id" class="flex items-center justify-between text-xs py-1 clickable gap-2" @click="openPlayer(b.id)">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <team-badge :short="b.teamShort" size="w-5 h-5" text="text-[9px]"></team-badge>
+                <span class="truncate"><span class="u-hover">{{ b.web }}</span> <span class="text-dim">{{ b.pos }} · £{{ b.cost.toFixed(1) }}m</span></span>
+              </div>
+              <span class="font-display font-600 shrink-0">{{ b.value5.toFixed(1) }} pts/£m</span>
             </div>
           </div>
           <div class="surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
             <p class="font-display font-700 mb-2">Differentials worth a punt</p>
-            <div v-for="d in differentialPicks" :key="d.id" class="flex items-center justify-between text-xs py-1 clickable" @click="openPlayer(d.id)">
-              <span><span class="u-hover">{{ d.web }}</span> <span class="text-dim">{{ d.pos }} · {{ d.selPct.toFixed(1) }}% owned</span></span>
-              <span class="font-display font-600" style="color:var(--pink)">{{ d.pred5.toFixed(1) }} pts/5</span>
+            <div v-for="d in differentialPicks" :key="d.id" class="flex items-center justify-between text-xs py-1 clickable gap-2" @click="openPlayer(d.id)">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <team-badge :short="d.teamShort" size="w-5 h-5" text="text-[9px]"></team-badge>
+                <span class="truncate"><span class="u-hover">{{ d.web }}</span> <span class="text-dim">{{ d.pos }} · {{ d.selPct.toFixed(1) }}% owned</span></span>
+              </div>
+              <span class="font-display font-600 shrink-0" style="color:var(--pink)">{{ d.pred5.toFixed(1) }} pts/5</span>
             </div>
           </div>
         </div>
@@ -530,13 +626,13 @@
     <section v-show="activeTab==='chips'" class="space-y-4">
       <div>
         <h2 class="font-display font-700 text-lg">Chip Tracker</h2>
-        <p class="text-[11px] text-dim">Everyone gets one of each chip per half-season (Wildcard: GW2–19 &amp; GW20–38). Timing tips only cover the fixtures we can currently see (GW{{ meta.nextGw }}–{{ meta.horizonGws[meta.horizonGws.length-1] }}) — blanks and doubles later in the season aren't known yet.</p>
+        <p class="text-[13px] text-dim">Everyone gets one of each chip per half-season (Wildcard: GW2–19 &amp; GW20–38). Timing tips only cover the fixtures we can currently see (GW{{ meta.nextGw }}–{{ meta.horizonGws[meta.horizonGws.length-1] }}) — blanks and doubles later in the season aren't known yet.</p>
       </div>
       <!-- mobile: card per manager -->
       <div class="sm:hidden space-y-3">
         <div v-for="m in managers" :key="m.entryId" class="surface rounded-xl p-3" style="box-shadow:var(--shadow);">
           <div class="flex items-center gap-2 mb-2 clickable" @click="openManager(m.entryId)">
-            <div class="badge-circle w-8 h-8 text-[9px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div>
+            <div class="badge-circle w-8 h-8 text-[11px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div>
             <span class="font-display font-600 text-sm u-hover">{{ m.teamName }}</span>
           </div>
           <div class="grid grid-cols-2 gap-1.5">
@@ -556,7 +652,7 @@
             <thead><tr><th>Manager</th><th v-for="cw in meta.chipWindows" :key="cw.key">{{ cw.label }}</th></tr></thead>
             <tbody>
               <tr v-for="m in managers" :key="m.entryId">
-                <td><div class="flex items-center gap-2 clickable" @click="openManager(m.entryId)"><div class="badge-circle w-7 h-7 text-[9px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div><span class="font-display font-600 u-hover">{{ m.teamName }}</span></div></td>
+                <td><div class="flex items-center gap-2 clickable" @click="openManager(m.entryId)"><div class="badge-circle w-7 h-7 text-[11px]" :style="{background: managerColor(m.entryId)}">{{ initials(m.teamName) }}</div><span class="font-display font-600 u-hover">{{ m.teamName }}</span></div></td>
                 <td v-for="cs in m.chipStatus" :key="cs.key">
                   <span v-if="cs.status==='used'" class="chip-pill chip-used">Used GW{{ cs.usedEvent }}</span>
                   <span v-else-if="cs.status==='available'" class="chip-pill chip-available">Available</span>
@@ -580,19 +676,41 @@
     <section v-show="activeTab==='forfeits'" class="space-y-4">
       <div>
         <h2 class="font-display font-700 text-lg">Forfeit Tracker</h2>
-        <p class="text-[11px] text-dim">The house rules, translated and tracked automatically. Eligible: {{ forfeitManagers.map(m=>m.teamName).join(', ') }} — this bet is just among the four of you.</p>
+        <p class="text-sm text-dim">The house rules, translated and tracked automatically. Eligible: {{ forfeitManagers.map(m=>m.managerName).join(', ') }} — this bet is just among the four of you.</p>
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
         <div class="surface rounded-2xl p-4" style="box-shadow:var(--shadow);">
-          <p class="font-display font-700 text-sm mb-1">Season forfeit — The Raw Egg Toast</p>
-          <p class="text-xs text-dim mb-2">Whoever finishes bottom of the table (among the four) at the end of the season drinks a full glass of raw eggs.</p>
-          <div class="flex items-center justify-between text-sm"><span class="text-dim">Currently on track</span><span class="font-display font-700 clickable" @click="openManager(forfeitTrailing.entryId)"><span class="u-hover">{{ forfeitTrailing.teamName }}</span></span></div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:var(--surface-2);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-[18px] h-[18px]" style="color:#E8C468"><path d="M12 22c4.4 0 7-3.2 7-7.5C19 9 15.5 3.5 12 2 8.5 3.5 5 9 5 14.5 5 18.8 7.6 22 12 22z"/></svg>
+            </div>
+            <p class="font-display font-700 text-sm">Season forfeit — The Raw Egg Toast</p>
+          </div>
+          <p class="text-sm text-dim mb-3">Whoever finishes bottom of the table (among the four) at the end of the season drinks a full glass of raw eggs.</p>
+          <div class="rounded-xl p-3 flex items-center gap-2.5 clickable" style="background:var(--surface-2);" @click="openManager(forfeitTrailing.entryId)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 shrink-0" style="color:var(--fdr5)"><path d="M10.3 3.9L2.6 18a1.8 1.8 0 001.5 2.7h15.8a1.8 1.8 0 001.5-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z"/><path d="M12 9.3v4"/><circle cx="12" cy="16.4" r="0.65" fill="currentColor" stroke="none"/></svg>
+            <div class="min-w-0">
+              <p class="text-[11px] text-dim leading-tight">Currently on track</p>
+              <p class="font-display font-700 text-sm truncate u-hover">{{ forfeitTrailing.managerName }}</p>
+            </div>
+          </div>
         </div>
         <div class="surface rounded-2xl p-4" style="box-shadow:var(--shadow);">
-          <p class="font-display font-700 text-sm mb-1">Christmas forfeit — The Christmas Fire Chip</p>
-          <p class="text-xs text-dim mb-2">Whoever is bottom of the table (among the four) after Gameweek 16 (last one before Christmas) eats a chip loaded with the hottest sauce the group can find.</p>
-          <div class="flex items-center justify-between text-sm"><span class="text-dim">If the checkpoint were today</span><span class="font-display font-700 clickable" @click="openManager(forfeitTrailing.entryId)"><span class="u-hover">{{ forfeitTrailing.teamName }}</span></span></div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:var(--surface-2);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-[18px] h-[18px]" style="color:#F2994A"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+            </div>
+            <p class="font-display font-700 text-sm">Christmas forfeit — The Christmas Fire Chip</p>
+          </div>
+          <p class="text-sm text-dim mb-3">Whoever is bottom of the table (among the four) after Gameweek 16 (last one before Christmas) eats a chip loaded with the hottest sauce the group can find.</p>
+          <div class="rounded-xl p-3 flex items-center gap-2.5 clickable" style="background:var(--surface-2);" @click="openManager(forfeitTrailing.entryId)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 shrink-0" style="color:var(--fdr5)"><path d="M10.3 3.9L2.6 18a1.8 1.8 0 001.5 2.7h15.8a1.8 1.8 0 001.5-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z"/><path d="M12 9.3v4"/><circle cx="12" cy="16.4" r="0.65" fill="currentColor" stroke="none"/></svg>
+            <div class="min-w-0">
+              <p class="text-[11px] text-dim leading-tight">If the checkpoint were today</p>
+              <p class="font-display font-700 text-sm truncate u-hover">{{ forfeitTrailing.managerName }}</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -606,14 +724,20 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="font-display font-600 text-sm">{{ mf.forfeit.title }}</p>
-              <p class="text-xs text-dim">{{ mf.forfeit.desc }}</p>
+              <p class="text-sm text-dim">{{ mf.forfeit.desc }}</p>
             </div>
-            <div class="text-xs text-right sm:w-40 shrink-0">
+            <div class="sm:w-44 shrink-0">
               <template v-if="mf.stats[0].gws>0">
-                <p>🏆 <span class="clickable" @click="openManager(mf.stats[0].m.entryId)"><span class="u-hover">{{ mf.stats[0].m.teamName }}</span></span></p>
-                <p class="text-dim">😬 <span class="clickable" @click="openManager(mf.stats[mf.stats.length-1].m.entryId)"><span class="u-hover">{{ mf.stats[mf.stats.length-1].m.teamName }}</span></span></p>
+                <div class="flex items-center gap-1.5 clickable" @click="openManager(mf.stats[0].m.entryId)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" style="color:var(--green-ink)"><path d="M8.5 21h7M12 17v4"/><path d="M7.5 4.5h9V8a4.5 4.5 0 01-9 0V4.5z"/><path d="M7.5 5.5h-2.7a1 1 0 00-1 1.2c.4 2.3 1.8 4 3.9 4.5M16.5 5.5h2.7a1 1 0 011 1.2c-.4 2.3-1.8 4-3.9 4.5"/></svg>
+                  <span class="text-sm font-display font-600 u-hover truncate">{{ mf.stats[0].m.managerName }}</span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1 clickable" @click="openManager(mf.stats[mf.stats.length-1].m.entryId)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" style="color:var(--fdr5)"><path d="M10.3 3.9L2.6 18a1.8 1.8 0 001.5 2.7h15.8a1.8 1.8 0 001.5-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z"/><path d="M12 9.3v4"/><circle cx="12" cy="16.4" r="0.65" fill="currentColor" stroke="none"/></svg>
+                  <span class="text-sm text-dim u-hover truncate">{{ mf.stats[mf.stats.length-1].m.managerName }}</span>
+                </div>
               </template>
-              <p v-else class="text-dim">Not started</p>
+              <p v-else class="text-sm text-dim">Not started</p>
             </div>
           </div>
         </div>
@@ -624,12 +748,12 @@
     <section v-show="activeTab==='ownership'" class="space-y-5">
       <div>
         <h2 class="font-display font-700 text-lg">Ownership &amp; Global Population</h2>
-        <p class="text-[11px] text-dim">How your six-person league compares to the ~{{ formatMillions(meta.totalFplManagers) }} managers playing FPL worldwide.</p>
+        <p class="text-[13px] text-dim">How your six-person league compares to the ~{{ formatMillions(meta.totalFplManagers) }} managers playing FPL worldwide.</p>
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div class="stat-card"><p class="text-[11px] text-dim font-display font-600">MOST SELECTED</p><p class="font-display font-700 mt-1">{{ mostSelectedPlayer ? mostSelectedPlayer.web : '—' }}</p><p class="text-[11px] text-dim">{{ mostSelectedPlayer ? mostSelectedPlayer.selPct.toFixed(1)+'% globally' : '' }}</p></div>
-        <div class="stat-card"><p class="text-[11px] text-dim font-display font-600">MOST CAPTAINED</p><p class="font-display font-700 mt-1">{{ mostCaptainedPlayer ? mostCaptainedPlayer.web : '—' }}</p><p class="text-[11px] text-dim">GW{{ meta.currentGw }}</p></div>
-        <div class="stat-card"><p class="text-[11px] text-dim font-display font-600">MOST TRANSFERRED IN</p><p class="font-display font-700 mt-1">{{ mostTransferredInPlayer ? mostTransferredInPlayer.web : '—' }}</p><p class="text-[11px] text-dim">GW{{ meta.currentGw }}</p></div>
+        <div class="stat-card"><p class="text-[13px] text-dim font-display font-600">MOST SELECTED</p><p class="font-display font-700 mt-1">{{ mostSelectedPlayer ? mostSelectedPlayer.web : '—' }}</p><p class="text-[13px] text-dim">{{ mostSelectedPlayer ? mostSelectedPlayer.selPct.toFixed(1)+'% globally' : '' }}</p></div>
+        <div class="stat-card"><p class="text-[13px] text-dim font-display font-600">MOST CAPTAINED</p><p class="font-display font-700 mt-1">{{ mostCaptainedPlayer ? mostCaptainedPlayer.web : '—' }}</p><p class="text-[13px] text-dim">GW{{ meta.currentGw }}</p></div>
+        <div class="stat-card"><p class="text-[13px] text-dim font-display font-600">MOST TRANSFERRED IN</p><p class="font-display font-700 mt-1">{{ mostTransferredInPlayer ? mostTransferredInPlayer.web : '—' }}</p><p class="text-[13px] text-dim">GW{{ meta.currentGw }}</p></div>
       </div>
       <div class="surface rounded-2xl overflow-hidden" style="box-shadow:var(--shadow);">
         <div class="px-4 sm:px-5 py-3 border-b border-hair"><p class="font-display font-700">Most globally-owned players vs your league</p></div>
@@ -638,9 +762,9 @@
             <thead><tr><th>Player</th><th>Global own%</th><th>In your league</th></tr></thead>
             <tbody>
               <tr v-for="p in topGlobalOwned" :key="p.id" class="clickable" @click="openPlayer(p.id)">
-                <td><div class="flex items-center gap-2"><div class="badge-circle w-7 h-7 text-[9px]" :style="{background: teamColor(p.teamShort)}">{{ p.teamShort }}</div><span class="font-display font-600 u-hover">{{ p.web }}</span></div></td>
+                <td><div class="flex items-center gap-2"><team-badge :short="p.teamShort" size="w-7 h-7" text="text-[11px]"></team-badge><span class="font-display font-600 u-hover">{{ p.web }}</span></div></td>
                 <td>{{ p.selPct.toFixed(1) }}%</td>
-                <td><div class="flex items-center gap-1.5"><div class="flex -space-x-1.5"><div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[8px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}" :title="managerName(ownerId)">{{ initials(managerName(ownerId)).slice(0,1) }}</div></div><span class="text-xs text-dim">{{ leagueOwners(p.id).length }}/{{ managers.length }}</span></div></td>
+                <td><div class="flex items-center gap-1.5"><div class="flex -space-x-1.5"><div v-for="ownerId in leagueOwners(p.id)" :key="ownerId" class="badge-circle w-5 h-5 text-[10px] ring-2" :style="{background: managerColor(ownerId), '--tw-ring-color':'var(--surface)'}" :title="managerName(ownerId)">{{ initials(managerName(ownerId)).slice(0,1) }}</div></div><span class="text-xs text-dim">{{ leagueOwners(p.id).length }}/{{ managers.length }}</span></div></td>
               </tr>
             </tbody>
           </table>
@@ -648,10 +772,10 @@
       </div>
       <div class="surface rounded-2xl p-4 sm:p-5" style="box-shadow:var(--shadow);">
         <p class="font-display font-700 mb-2">Hidden gems in your league</p>
-        <p class="text-[11px] text-dim mb-3">Owned by exactly one of you, low globally, high upside.</p>
+        <p class="text-[13px] text-dim mb-3">Owned by exactly one of you, low globally, high upside.</p>
         <div v-if="hiddenGems.length===0" class="text-xs text-dim">Nobody's carrying a differential right now.</div>
         <div v-for="g in hiddenGems" :key="g.id" class="flex items-center justify-between text-sm py-1.5 border-b last:border-0 border-hair clickable" @click="openPlayer(g.id)">
-          <div class="flex items-center gap-2"><div class="badge-circle w-6 h-6 text-[8px]" :style="{background: managerColor(leagueOwners(g.id)[0])}">{{ initials(managerName(leagueOwners(g.id)[0])).slice(0,1) }}</div><span><span class="u-hover">{{ g.web }}</span> <span class="text-dim">· {{ g.selPct.toFixed(1) }}% globally</span></span></div>
+          <div class="flex items-center gap-2"><div class="badge-circle w-6 h-6 text-[10px]" :style="{background: managerColor(leagueOwners(g.id)[0])}">{{ initials(managerName(leagueOwners(g.id)[0])).slice(0,1) }}</div><span><span class="u-hover">{{ g.web }}</span> <span class="text-dim">· {{ g.selPct.toFixed(1) }}% globally</span></span></div>
           <span class="font-display font-600" style="color:var(--pink)">{{ g.pred5.toFixed(1) }} pts/5</span>
         </div>
       </div>
@@ -660,9 +784,55 @@
   </main>
 
   <footer class="max-w-6xl mx-auto px-4 pb-10 pt-4">
-    <p v-if="meta.refreshIntervalMinutes" class="text-[11px] text-dim">Built for {{ meta.leagueName }} · data last refreshed {{ formatGenerated }} · {{ nextRefreshText }} · predictions are a simplified in-house model, not betting advice. Team badges use club colours, not official crests.</p>
-    <p v-else class="text-[11px] text-dim">Built for {{ meta.leagueName }} · data pulled from the official FPL API as of {{ formatGenerated }} · predictions are a simplified in-house model, not betting advice. Team badges use club colours, not official crests. This is a static snapshot — the FPL API blocks direct browser requests from other sites, so nothing here refreshes on its own until it's rebuilt (see the included refresh script, or set up a small proxy for continuous live scores).</p>
+    <p v-if="meta.refreshIntervalMinutes" class="text-[13px] text-dim">Built for {{ meta.leagueName }} · data last refreshed {{ formatGenerated }} · {{ nextRefreshText }} · predictions are a simplified in-house model, not betting advice. Club crests shown where provided locally (see the badges/ folder), club colours otherwise.</p>
+    <p v-else class="text-[13px] text-dim">Built for {{ meta.leagueName }} · data pulled from the official FPL API as of {{ formatGenerated }} · predictions are a simplified in-house model, not betting advice. Club crests shown where provided locally (see the badges/ folder), club colours otherwise. This is a static snapshot — the FPL API blocks direct browser requests from other sites, so nothing here refreshes on its own until it's rebuilt (see the included refresh script, or set up a small proxy for continuous live scores).</p>
   </footer>
+
+  <!-- ============ MOBILE BOTTOM NAV ============ -->
+  <nav class="bottom-nav sm:hidden">
+    <button @click="tapTab('home')" class="bottom-nav-item" :class="{active: activeTab==='home'}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 001 1h3.5v-6h3v6H17a1 1 0 001-1v-9"/></svg>
+      <span>Home</span>
+    </button>
+    <button @click="tapTab('table')" class="bottom-nav-item" :class="{active: activeTab==='table'}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3"/></svg>
+      <span>Table</span>
+    </button>
+    <button @click="tapTab('predictions')" class="bottom-nav-item" :class="{active: activeTab==='predictions'}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5.5-6 4 4 7-8"/><path d="M16 7h4v4"/></svg>
+      <span>Players</span>
+    </button>
+    <button @click="tapTab('transfers')" class="bottom-nav-item" :class="{active: activeTab==='transfers'}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h12l-3.5-3.5"/><path d="M17.5 16.5h-12l3.5 3.5"/></svg>
+      <span>Transfers</span>
+    </button>
+    <button @click="showMoreSheet=true" class="bottom-nav-item" :class="{active: moreTabActive}">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+
+  <div v-if="showMoreSheet" class="more-sheet-backdrop sm:hidden" @click.self="showMoreSheet=false">
+    <div class="more-sheet">
+      <div class="more-sheet-grabber"></div>
+      <button @click="tapTab('fixtures')" class="more-sheet-item w-full" :class="{active: activeTab==='fixtures'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="2"/><path d="M3.5 9.5h17"/><path d="M8 2.5v4"/><path d="M16 2.5v4"/></svg>
+        <span>Fixture Run</span>
+      </button>
+      <button @click="tapTab('chips')" class="more-sheet-item w-full" :class="{active: activeTab==='chips'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5L4.5 14H10l-1 7.5 8.5-11.5H12l1-7.5z"/></svg>
+        <span>Chips</span>
+      </button>
+      <button @click="tapTab('forfeits')" class="more-sheet-item w-full" :class="{active: activeTab==='forfeits'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 21h7M12 17v4"/><path d="M7.5 4.5h9V8a4.5 4.5 0 01-9 0V4.5z"/><path d="M7.5 5.5h-2.7a1 1 0 00-1 1.2c.4 2.3 1.8 4 3.9 4.5M16.5 5.5h2.7a1 1 0 011 1.2c-.4 2.3-1.8 4-3.9 4.5"/></svg>
+        <span>Forfeits</span>
+      </button>
+      <button @click="tapTab('ownership')" class="more-sheet-item w-full" :class="{active: activeTab==='ownership'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16.3 14.3c2.4.4 4.2 2.4 4.7 5.7"/></svg>
+        <span>Ownership</span>
+      </button>
+    </div>
+  </div>
 
   <!-- ============ DETAIL MODAL ============ -->
   <div v-if="modalStack.length" class="modal-backdrop" @click.self="closeModal">
@@ -677,13 +847,17 @@
       <div v-if="currentModal.type==='manager' && modalManager" class="p-5 space-y-5">
         <div class="flex items-center gap-3">
           <div class="badge-circle w-12 h-12 text-sm" :style="{background: managerColor(modalManager.entryId)}">{{ initials(modalManager.teamName) }}</div>
-          <div><p class="font-display font-700 text-lg">{{ modalManager.teamName }}</p><p class="text-xs text-dim">{{ modalManager.managerName }} · Rank {{ modalManager.rank }} · {{ modalManager.total }} pts</p></div>
+          <div>
+            <p class="font-display font-700 text-lg">{{ modalManager.teamName }}</p>
+            <p class="text-xs text-dim">{{ modalManager.managerName }} · Rank {{ modalManager.rank }} · {{ modalManager.total }} pts</p>
+            <p v-if="modalManager.favouriteTeam" class="text-[11px] text-dim flex items-center gap-1 mt-0.5"><team-badge :short="modalManager.favouriteTeam" size="w-4 h-4" text="text-[7px]"></team-badge> supports {{ teamNameFromShort(modalManager.favouriteTeam) }}</p>
+          </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2 text-center">
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">Bank</p><p class="font-display font-700">£{{ modalManager.bank.toFixed(1) }}m</p></div>
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">Squad value</p><p class="font-display font-700">£{{ modalManager.teamValue.toFixed(1) }}m</p></div>
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">GW{{ meta.currentGw }}</p><p class="font-display font-700">{{ modalManager.eventTotal }}</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">Bank</p><p class="font-display font-700">£{{ modalManager.bank.toFixed(1) }}m</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">Squad value</p><p class="font-display font-700">£{{ modalManager.teamValue.toFixed(1) }}m</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">GW{{ meta.currentGw }}</p><p class="font-display font-700">{{ modalManager.eventTotal }}</p></div>
         </div>
 
         <div>
@@ -691,7 +865,7 @@
           <svg :width="'100%'" :height="70" viewBox="0 0 300 70" preserveAspectRatio="none" class="w-full">
             <polyline :points="bigSparkPoints(modalManager.gwHistory,300,70)" fill="none" :stroke="managerColor(modalManager.entryId)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <div class="flex justify-between text-[10px] text-dim mt-1"><span>GW1</span><span>GW{{ meta.currentGw }}</span></div>
+          <div class="flex justify-between text-[12px] text-dim mt-1"><span>GW1</span><span>GW{{ meta.currentGw }}</span></div>
         </div>
 
         <div>
@@ -711,15 +885,15 @@
         </div>
 
         <div>
-          <p class="font-display font-700 text-sm mb-2">Current squad</p>
-          <div v-for="grp in modalSquadGroups" :key="grp.pos" class="mb-2">
-            <p class="text-[10px] font-display font-600 tracking-wide text-dim mb-1">{{ grp.pos }}</p>
-            <div class="grid grid-cols-2 gap-1.5">
-              <div v-for="sp in grp.items" :key="sp.id" class="flex items-center justify-between px-2 py-1 rounded-lg clickable" :class="sp.starter ? 'surface-2' : 'opacity-55'" @click="openPlayer(sp.id)">
-                <div class="flex items-center gap-1.5 min-w-0"><div class="badge-circle w-5 h-5 text-[7px]" :style="{background: teamColor(sp.teamShort)}">{{ sp.teamShort }}</div><span class="text-xs truncate u-hover">{{ sp.web }}</span><span v-if="sp.captain" class="text-[8px] font-display font-700 px-1 rounded" style="background:var(--pink); color:#fff;">C</span></div>
-              </div>
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <p class="font-display font-700 text-sm">Squad</p>
+            <div class="flex gap-1.5">
+              <button class="toggle-btn" style="padding:0.3rem 0.6rem; font-size:0.72rem;" :class="{active: modalSquadView==='current'}" @click="modalSquadView='current'">Current</button>
+              <button class="toggle-btn" style="padding:0.3rem 0.6rem; font-size:0.72rem;" :class="{active: modalSquadView==='best'}" @click="modalSquadView='best'">Best XI</button>
             </div>
           </div>
+          <p v-if="modalSquadView==='best' && modalPitch" class="text-[11px] text-dim mb-2">Best possible GW{{ meta.nextGw }} XI from this squad, blending predicted points with ICT threat. Predicted incl. captain: <span class="font-display font-700" :style="{color:'var(--pink)'}">{{ modalPitch.predictedTotal.toFixed(1) }} pts</span>.</p>
+          <squad-pitch v-if="modalPitch" :starters="modalPitch.starters" :bench="modalPitch.bench" :captain-id="modalPitch.captainId" :vice-id="modalPitch.viceId" :metric-key="modalPitch.metricKey" :metric-label="modalPitch.metricLabel" :formation="modalPitch.formation" @select="openPlayer"></squad-pitch>
         </div>
 
         <div>
@@ -739,22 +913,22 @@
       <!-- player profile -->
       <div v-if="currentModal.type==='player' && modalPlayer" class="p-5 space-y-5">
         <div class="flex items-center gap-3">
-          <div class="badge-circle w-12 h-12 text-xs" :style="{background: teamColor(modalPlayer.teamShort)}">{{ modalPlayer.teamShort }}</div>
+          <team-badge :short="modalPlayer.teamShort" size="w-14 h-14" text="text-sm"></team-badge>
           <div><p class="font-display font-700 text-lg">{{ modalPlayer.first }} {{ modalPlayer.second }}</p><p class="text-xs text-dim">{{ modalPlayer.pos }} · £{{ modalPlayer.cost.toFixed(1) }}m</p></div>
         </div>
         <p v-if="modalPlayer.status!=='a'" class="text-xs rounded-lg px-3 py-2" style="background:var(--surface-2); color:var(--fdr5)">{{ modalPlayer.news || statusLabel(modalPlayer.status) }}</p>
 
         <div class="grid grid-cols-4 gap-2 text-center">
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">Total pts</p><p class="font-display font-700">{{ modalPlayer.totalPoints }}</p></div>
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">Form</p><p class="font-display font-700">{{ modalPlayer.form.toFixed(1) }}</p></div>
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">Own %</p><p class="font-display font-700">{{ modalPlayer.selPct.toFixed(1) }}</p></div>
-          <div class="surface-2 rounded-xl py-2"><p class="text-[10px] text-dim">In league</p><p class="font-display font-700">{{ leagueOwners(modalPlayer.id).length }}/{{ managers.length }}</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">Total pts</p><p class="font-display font-700">{{ modalPlayer.totalPoints }}</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">Form</p><p class="font-display font-700">{{ modalPlayer.form.toFixed(1) }}</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">Own %</p><p class="font-display font-700">{{ modalPlayer.selPct.toFixed(1) }}</p></div>
+          <div class="surface-2 rounded-xl py-2"><p class="text-[12px] text-dim">In league</p><p class="font-display font-700">{{ leagueOwners(modalPlayer.id).length }}/{{ managers.length }}</p></div>
         </div>
 
         <div class="grid grid-cols-3 gap-2 text-center">
-          <div><p class="text-[10px] text-dim">xG</p><p class="font-display font-600 text-sm">{{ modalPlayer.xg.toFixed(2) }}</p></div>
-          <div><p class="text-[10px] text-dim">xA</p><p class="font-display font-600 text-sm">{{ modalPlayer.xa.toFixed(2) }}</p></div>
-          <div><p class="text-[10px] text-dim">xGI</p><p class="font-display font-600 text-sm">{{ modalPlayer.xgi.toFixed(2) }}</p></div>
+          <div><p class="text-[12px] text-dim">xG</p><p class="font-display font-600 text-sm">{{ modalPlayer.xg.toFixed(2) }}</p></div>
+          <div><p class="text-[12px] text-dim">xA</p><p class="font-display font-600 text-sm">{{ modalPlayer.xa.toFixed(2) }}</p></div>
+          <div><p class="text-[12px] text-dim">xGI</p><p class="font-display font-600 text-sm">{{ modalPlayer.xgi.toFixed(2) }}</p></div>
         </div>
 
         <div>
@@ -811,6 +985,77 @@ const TEAM_COLORS = {
   MUN:'#DA291C', NEW:'#2B2B2B', NFO:'#DD0000', TOT:'#132257', SUN:'#EB172B'
 };
 const MANAGER_PALETTE = ['#E90074','#00A67D','#F2994A','#3D5AFE','#9C6ADE','#00B8D9'];
+
+// Club crest, with a graceful fallback. Drop PNGs named after each team's short
+// code (e.g. badges/ARS.png, badges/BRE.png — the same codes already used
+// throughout this dashboard) into a "badges" folder next to index.html and
+// they'll be picked up automatically; anything missing just falls back to the
+// existing colour-coded circle, so this works with zero, some, or all crests supplied.
+const TeamBadge = {
+  props: {
+    short: { type: String, required: true },
+    size: { type: String, default: 'w-7 h-7' },
+    text: { type: String, default: 'text-[11px]' },
+  },
+  data(){ return { failed: false }; },
+  watch: { short(){ this.failed = false; } },
+  computed: { color(){ return TEAM_COLORS[this.short] || 'var(--purple-soft)'; } },
+  template: `
+    <img v-if="short && !failed" :src="'badges/'+short+'.png'" @error="failed=true" :class="size" class="badge-img" :alt="short" :title="short">
+    <div v-else class="badge-circle" :class="[size, text]" :style="{background: color}">{{ short }}</div>
+  `,
+};
+
+// Renders a squad (or a computed best XI) as an actual formation on a pitch,
+// closer to the official FPL squad view than a plain list — attackers nearest
+// the top like the real app, goalkeeper at the bottom, bench below the pitch.
+const SquadPitch = {
+  components: { 'team-badge': TeamBadge },
+  props: {
+    starters: { type: Array, default: () => [] },
+    bench: { type: Array, default: () => [] },
+    captainId: { type: [Number,String], default: null },
+    viceId: { type: [Number,String], default: null },
+    metricKey: { type: String, default: 'pred5' },
+    metricLabel: { type: String, default: 'pts' },
+    formation: { type: String, default: '' },
+  },
+  emits: ['select'],
+  computed: {
+    rows(){
+      const order = ['FWD','MID','DEF','GKP'];
+      return order.map(pos => ({ pos, items: (this.starters||[]).filter(p=>p.pos===pos) })).filter(r=>r.items.length);
+    },
+  },
+  template: `
+    <div>
+      <div v-if="formation" class="text-center text-[11px] font-display font-700 text-dim tracking-wide mb-1.5">FORMATION {{ formation }}</div>
+      <div class="pitch">
+        <div class="pitch-lines"></div>
+        <div v-for="row in rows" :key="row.pos" class="pitch-row">
+          <div v-for="p in row.items" :key="p.id" class="pitch-card" @click="$emit('select', p.id)">
+            <div class="pitch-card-badge-wrap">
+              <team-badge :short="p.teamShort" size="w-9 h-9" text="text-[11px]"></team-badge>
+              <span v-if="p.id===captainId" class="pitch-armband" title="Captain">C</span>
+              <span v-else-if="p.id===viceId" class="pitch-armband vice" title="Vice-captain">V</span>
+            </div>
+            <span class="pitch-card-name">{{ p.web }}</span>
+            <span class="pitch-card-score">{{ (p[metricKey]||0).toFixed(1) }}{{ ' '+metricLabel }}</span>
+          </div>
+        </div>
+      </div>
+      <div v-if="bench && bench.length" class="pitch-bench">
+        <p class="text-[11px] font-display font-700 text-dim tracking-wide mb-2">BENCH</p>
+        <div class="pitch-bench-row">
+          <div v-for="p in bench" :key="p.id" class="pitch-bench-card" @click="$emit('select', p.id)">
+            <team-badge :short="p.teamShort" size="w-8 h-8" text="text-[10px]"></team-badge>
+            <span class="pitch-bench-name">{{ p.web }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+};
 const CHIP_LABELS = { wildcard:'Wildcard', freehit:'Free Hit', bboost:'Bench Boost', '3xc':'Triple Captain' };
 const CHIP_SHORT = { wildcard:'WC', freehit:'FH', bboost:'BB', '3xc':'3XC' };
 
@@ -864,6 +1109,9 @@ createApp({
     ];
     const activeTab = ref('home');
     function setTab(id){ activeTab.value = id; try { localStorage.setItem('fpl-tab', id); } catch(e) {} }
+    const showMoreSheet = ref(false);
+    const moreTabActive = computed(() => ['fixtures','chips','forfeits','ownership'].includes(activeTab.value));
+    function tapTab(id){ setTab(id); showMoreSheet.value = false; }
 
     onMounted(() => {
       try { const s = localStorage.getItem('fpl-theme'); if (s==='light'||s==='dark') theme.value = s; } catch(e) {}
@@ -877,7 +1125,13 @@ createApp({
     onMounted(() => { timer = setInterval(() => now.value = Date.now(), 1000); });
     onUnmounted(() => { if (timer) clearInterval(timer); });
 
-    const isLive = computed(() => now.value >= new Date(meta.nextDeadline).getTime());
+    // A gameweek is "live" (matches not yet finalised) from the moment its
+    // deadline passes until FPL confirms its results (bonus points included) —
+    // not merely "before the *next* gameweek's deadline arrives". That distinction
+    // matters because meta.nextGw/nextDeadline jump forward the instant currentGw
+    // advances, so comparing `now` to nextDeadline alone used to make the header
+    // flip to "done" right as a gameweek kicked off, days before it actually ended.
+    const isLive = computed(() => meta.gwFinished === false);
     const nextRefreshText = computed(() => {
       if (!meta.refreshIntervalMinutes || !meta.generatedAt) return '';
       const dueAt = new Date(meta.generatedAt).getTime() + meta.refreshIntervalMinutes*60000;
@@ -903,6 +1157,7 @@ createApp({
     function initials(name){ if (!name) return '??'; const parts = name.trim().split(/\s+/); if (parts.length===1) return parts[0].slice(0,2).toUpperCase(); return (parts[0][0]+parts[1][0]).toUpperCase(); }
     function managerColor(entryId){ return managerColorMap[entryId] || 'var(--purple-soft)'; }
     function teamColor(short){ return TEAM_COLORS[short] || 'var(--purple-soft)'; }
+    function teamNameFromShort(short){ const t = teamsRaw.find(x=>x.short===short); return t ? t.name : short; }
     function managerName(entryId){ const m = managersRaw.find(x=>x.entryId===entryId); return m ? m.teamName : ''; }
     function playerName(id){ const p = playersById[id]; return p ? p.web : '—'; }
     function chipShort(name){ return CHIP_SHORT[name] || name; }
@@ -1008,7 +1263,71 @@ createApp({
       groups.forEach(g => g.items.sort((a,b)=>(b.starter-a.starter)||(a.slot-b.slot)));
       return groups;
     }
-    const squadGroups = computed(() => buildSquadGroups(selectedManager.value));
+    // (squadGroups computed removed — superseded by pitchData/transfersPitch below, which
+    // both wraps buildSquadGroups for the "current" view and blends in the best-XI view)
+
+    // ---------- best XI optimiser (next GW, blends predicted points with ICT threat) ----------
+    const VALID_FORMATIONS = [[3,4,3],[3,5,2],[4,3,3],[4,4,2],[4,5,1],[5,2,3],[5,3,2],[5,4,1]];
+    function minMaxNorm(values){
+      if (!values.length) return () => 0;
+      const min = Math.min(...values), max = Math.max(...values), range = max - min || 1;
+      return v => (v - min) / range;
+    }
+    function bestLineup(manager){
+      if (!manager) return null;
+      const squad = manager.squad.map(s => playersById[s.id]).filter(Boolean);
+      if (squad.length < 11) return null;
+      const normPred = minMaxNorm(squad.map(p=>p.pred1));
+      const normThreat = minMaxNorm(squad.map(p=>p.threat||0));
+      // 70% next-GW predicted points, 30% ICT threat — points stays the primary signal
+      // (it already folds in form, fixture difficulty and availability), threat as a
+      // secondary tiebreaker that can surface goal threat form/PPG haven't caught up to yet.
+      const scored = squad.map(p => ({ ...p, rating: 0.7*normPred(p.pred1) + 0.3*normThreat(p.threat||0) }));
+      const byPos = { GKP: [], DEF: [], MID: [], FWD: [] };
+      scored.forEach(p => { if (byPos[p.pos]) byPos[p.pos].push(p); });
+      Object.values(byPos).forEach(list => list.sort((a,b)=>b.rating-a.rating));
+      const gk = byPos.GKP[0] || null;
+      let best = null;
+      VALID_FORMATIONS.forEach(([d,m,f]) => {
+        if (!gk || byPos.DEF.length<d || byPos.MID.length<m || byPos.FWD.length<f) return;
+        const defs = byPos.DEF.slice(0,d), mids = byPos.MID.slice(0,m), fwds = byPos.FWD.slice(0,f);
+        const xi = [gk, ...defs, ...mids, ...fwds];
+        const total = xi.reduce((s,p)=>s+p.rating,0);
+        if (!best || total > best.total) {
+          best = { formation: `${d}-${m}-${f}`, xi, total,
+            bench: [...byPos.GKP.slice(1), ...byPos.DEF.slice(d), ...byPos.MID.slice(m), ...byPos.FWD.slice(f)] };
+        }
+      });
+      if (!best) return null;
+      const captain = [...best.xi].sort((a,b)=>b.rating-a.rating)[0];
+      const predictedTotal = best.xi.reduce((s,p)=>s + p.pred1, 0) + (captain ? captain.pred1 : 0);
+      return { ...best, captainId: captain ? captain.id : null, predictedTotal };
+    }
+    const bestXI = computed(() => bestLineup(selectedManager.value));
+    const modalBestXI = computed(() => bestLineup(modalManager.value));
+    // Adapts either the manager's actually-set squad or the computed best XI into the
+    // flat {starters, bench, captainId, viceId} shape the pitch view renders.
+    function pitchData(manager, view, best){
+      if (view === 'best') {
+        if (!best) return null;
+        return { starters: best.xi, bench: best.bench, captainId: best.captainId, viceId: null,
+                 metricKey: 'pred1', metricLabel: 'pts', formation: best.formation, predictedTotal: best.predictedTotal };
+      }
+      if (!manager) return null;
+      const groups = buildSquadGroups(manager);
+      const order = { GKP:0, DEF:1, MID:2, FWD:3 };
+      const starters = groups.flatMap(g=>g.items.filter(i=>i.starter)).sort((a,b)=>order[a.pos]-order[b.pos]);
+      const bench = groups.flatMap(g=>g.items.filter(i=>!i.starter));
+      const captain = starters.find(p=>p.captain);
+      const vice = starters.find(p=>p.vice);
+      const defCount = starters.filter(p=>p.pos==='DEF').length, midCount = starters.filter(p=>p.pos==='MID').length, fwdCount = starters.filter(p=>p.pos==='FWD').length;
+      return { starters, bench, captainId: captain ? captain.id : null, viceId: vice ? vice.id : null,
+               metricKey: 'pred5', metricLabel: 'p5', formation: `${defCount}-${midCount}-${fwdCount}` };
+    }
+    const transfersSquadView = ref('current');
+    const transfersPitch = computed(() => pitchData(selectedManager.value, transfersSquadView.value, bestXI.value));
+    const modalSquadView = ref('current');
+    const modalPitch = computed(() => pitchData(modalManager.value, modalSquadView.value, modalBestXI.value));
     const weakLinks = computed(() => {
       if (!selectedManager.value) return [];
       const starters = [];
@@ -1027,9 +1346,21 @@ createApp({
     const differentialPicks = computed(() => [...playersRaw].filter(p=>p.status==='a' && p.selPct<10).sort((a,b)=>b.pred5-a.pred5).slice(0,8));
 
     // ---------- chips ----------
+    // Each chip has two half-season windows (e.g. Wildcard #1 and #2). "Still
+    // available in *some* window" is almost always true early in a half (the
+    // next window hasn't opened yet, so it reads as available for everyone) —
+    // what we actually want is the window that's live right now, so a manager
+    // who's already burned this half's chip shows correctly as "used".
+    function currentChipWindow(name){
+      const windows = meta.chipWindows.filter(cw => cw.name === name);
+      return windows.find(cw => cw.start <= meta.currentGw && meta.currentGw <= cw.stop)
+          || windows.find(cw => cw.start > meta.currentGw)
+          || windows[windows.length - 1] || null;
+    }
     function chipTip(manager, chipName){
-      const window = manager.chipStatus.find(c=>c.name===chipName && c.status==='available');
-      if (!window) return 'Already used / not open yet';
+      const win = currentChipWindow(chipName);
+      const cs = win && manager.chipStatus.find(c=>c.key===win.key);
+      if (!cs || cs.status!=='available') return 'Already used / not open yet';
       const groups = buildSquadGroups(manager);
       const allPlayers = groups.flatMap(g=>g.items);
       let best = { event:null, score:-1 };
@@ -1049,8 +1380,13 @@ createApp({
     const chipWatchSummary = computed(() => {
       const rows = [];
       ['wildcard','freehit','bboost','3xc'].forEach(name => {
-        const stillHave = managers.filter(m => m.chipStatus.some(c=>c.name===name && c.status==='available')).length;
-        rows.push({ label: CHIP_LABELS[name]+' unused', text: `${stillHave}/${managers.length} managers` });
+        const win = currentChipWindow(name);
+        if (!win) { rows.push({ label: CHIP_LABELS[name]+' unused', text: '—' }); return; }
+        const stillHave = managers.filter(m => {
+          const cs = m.chipStatus.find(c=>c.key===win.key);
+          return cs && cs.status !== 'used';
+        }).length;
+        rows.push({ label: win.label+' unused', text: `${stillHave}/${managers.length} managers` });
       });
       return rows;
     });
@@ -1100,25 +1436,30 @@ createApp({
     const currentModal = computed(() => modalStack.value[modalStack.value.length-1] || null);
     const modalManager = computed(() => currentModal.value && currentModal.value.type==='manager' ? managers.find(m=>m.entryId===currentModal.value.id) : null);
     const modalPlayer = computed(() => currentModal.value && currentModal.value.type==='player' ? playersById[currentModal.value.id] : null);
-    const modalSquadGroups = computed(() => buildSquadGroups(modalManager.value));
+    // (modalSquadGroups computed removed — superseded by modalPitch)
     const modalPlayerHistory = computed(() => modalPlayer.value ? (playerHistoryMap[String(modalPlayer.value.id)] || []) : []);
 
     return {
       meta, managers, tabs, activeTab, setTab, theme, toggleTheme, isLive, nextRefreshText,
+      showMoreSheet, moreTabActive, tapTab,
       countdown, formatDeadline, formatGenerated, formatShortDate, formatMillions, rankDelta,
-      initials, managerColor, teamColor, managerName, playerName, chipShort, chipLabel, statusLabel, phaseLabel,
+      initials, managerColor, teamColor, teamNameFromShort, managerName, playerName, chipShort, chipLabel, statusLabel, phaseLabel,
       sparkPoints, sparkLast, bigSparkPoints,
       leagueGwAvg, leagueGwHighest,
       tableFilter, tableFilterLabel, filteredStandings,
       fdrSort, sortedTeams, fixturesForGw,
       positions, posFilter, search, hideUnavailable, sortKey, sortDir, setSort, sortArrow, sortablePlayers, filteredPlayers, leagueOwners,
-      selectedManagerId, selectedManager, squadGroups, weakLinks, recommendationsFor, topValuePicks, differentialPicks,
+      selectedManagerId, selectedManager, weakLinks, recommendationsFor, topValuePicks, differentialPicks,
+      bestXI, modalBestXI, transfersSquadView, transfersPitch, modalSquadView, modalPitch,
       chipTip, chipWatchSummary, monthlyForfeits, currentForfeit, topCaptainPicks, forfeitManagers, forfeitTrailing,
       mostSelectedPlayer, mostCaptainedPlayer, mostTransferredInPlayer, topGlobalOwned, hiddenGems,
-      modalStack, openManager, openPlayer, closeModal, goBack, currentModal, modalManager, modalPlayer, modalSquadGroups, modalPlayerHistory,
+      modalStack, openManager, openPlayer, closeModal, goBack, currentModal, modalManager, modalPlayer, modalPlayerHistory,
     };
   }
-}).mount('#app');
+})
+  .component('team-badge', TeamBadge)
+  .component('squad-pitch', SquadPitch)
+  .mount('#app');
 </script>
 </body>
 </html>
