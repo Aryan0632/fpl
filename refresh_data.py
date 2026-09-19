@@ -85,15 +85,18 @@ def main():
     manager_ids = [r["entry"] for r in league["standings"]["results"]]
     teams_by_id = {t["id"]: t for t in bootstrap["teams"]}
     events = bootstrap["events"]
-    current_candidates = [e for e in events if e["is_current"]]
-    if current_candidates:
-        current_ev = current_candidates[0]
-    else:
-        # Edge case: briefly, no event is flagged "current" (e.g. right around a
-        # deadline before FPL's own flags catch up). Fall back to the most
-        # recently finished gameweek, or the season's first if none has run yet.
-        finished = [e for e in events if e["finished"]]
-        current_ev = finished[-1] if finished else events[0]
+    now = datetime.now(timezone.utc)
+    # The "current" gameweek is the one whose deadline has most recently passed —
+    # i.e. squads are locked in and it's being (or about to be) played. We key
+    # this off each event's own deadline_time (fixed schedule data) rather than
+    # FPL's is_current flag: that flag can lag behind the real deadline by hours
+    # or more (it appears to wait on the *previous* gameweek being fully wrapped
+    # up), which would otherwise leave this whole app pointed at last week's
+    # gameweek — wrong squad, wrong picks, wrong predictions — even while the
+    # live one is already locked in and being played.
+    past_deadline_events = [e for e in events if e.get("deadline_time")
+                             and datetime.fromisoformat(e["deadline_time"].replace("Z", "+00:00")) <= now]
+    current_ev = past_deadline_events[-1] if past_deadline_events else events[0]
     current_gw = current_ev["id"]
     next_candidates = [e for e in events if e["id"] > current_gw]
     next_ev = next_candidates[0] if next_candidates else current_ev
@@ -113,13 +116,9 @@ def main():
     # ---------- decide whether this run is even worth doing ----------
     # "Live window": current_gw's matchday span, from its first kickoff to a few
     # hours after its last kickoff (covers the whole matchday, not just the exact
-    # minutes a ball is in play). This is keyed off current_gw (FPL's own
-    # is_current flag, already resolved above) rather than "the earliest event
-    # not yet flagged finished": that finished flag can lag for a while after a
-    # gameweek's last match while bonus points are being confirmed, which would
-    # otherwise leave this stuck pointing at a gameweek that's already over
-    # instead of the one that's actually being played right now.
-    now = datetime.now(timezone.utc)
+    # minutes a ball is in play). current_gw itself is now deadline-based (see
+    # above), so this naturally tracks the real current gameweek even when FPL's
+    # own flags haven't caught up yet.
     kickoffs = [datetime.fromisoformat(f["kickoff_time"].replace("Z", "+00:00"))
                 for f in fixtures if f.get("event") == current_gw and f.get("kickoff_time")]
     live_window = False
