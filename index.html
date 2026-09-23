@@ -1233,7 +1233,7 @@
       <button @click="closeModal" class="modal-close-mobile sm:hidden text-[15px]" aria-label="Close">✕</button>
 
       <!-- manager profile -->
-      <div v-if="currentModal.type==='manager' && modalManager" class="p-5 space-y-5">
+      <div v-if="currentModal.type==='manager' && modalManager" class="p-5 pt-[4.25rem] sm:pt-5 space-y-5">
         <div class="flex items-center gap-3">
           <manager-badge :manager="modalManager" size="w-12 h-12"></manager-badge>
           <div>
@@ -1300,7 +1300,7 @@
       </div>
 
       <!-- player profile -->
-      <div v-if="currentModal.type==='player' && modalPlayer" class="p-5 space-y-6">
+      <div v-if="currentModal.type==='player' && modalPlayer" class="p-5 pt-[4.25rem] sm:pt-5 space-y-6">
         <!-- Header: portrait card on the club-colour glow -->
         <div class="flex items-end gap-4 pt-1">
           <player-photo :player="modalPlayer" portrait size="w-[88px] h-[112px] sm:w-[110px] sm:h-[140px]" style="box-shadow:0 10px 30px rgba(0,0,0,0.25)"></player-photo>
@@ -1320,8 +1320,8 @@
             <div class="kpi"><p class="kpi-label">In league</p><p class="kpi-value" style="font-size:1.4rem">{{ leagueOwners(modalPlayer.id).length }}/{{ managers.length }}</p></div>
           </div>
           <div class="kpi-row kpi-sub-row" style="grid-template-columns:repeat(3,minmax(0,1fr)); border-top:none">
-            <div class="kpi"><p class="kpi-label">Expected goals</p><p class="kpi-value">{{ modalPlayer.xg.toFixed(2) }}</p></div>
-            <div class="kpi"><p class="kpi-label">Expected assists</p><p class="kpi-value">{{ modalPlayer.xa.toFixed(2) }}</p></div>
+            <div class="kpi"><p class="kpi-label"><span class="sm:hidden">xG</span><span class="hidden sm:inline">Expected goals</span></p><p class="kpi-value">{{ modalPlayer.xg.toFixed(2) }}</p></div>
+            <div class="kpi"><p class="kpi-label"><span class="sm:hidden">xA</span><span class="hidden sm:inline">Expected assists</span></p><p class="kpi-value">{{ modalPlayer.xa.toFixed(2) }}</p></div>
             <div class="kpi"><p class="kpi-label">xG + xA</p><p class="kpi-value">{{ modalPlayer.xgi.toFixed(2) }}</p></div>
           </div>
         </div>
@@ -1339,7 +1339,7 @@
             <div class="kpi"><p class="kpi-label">Minutes</p><p class="kpi-value" style="font-size:1.2rem">{{ modalPlayer.why.mins }}</p></div>
             <div class="kpi"><p class="kpi-label">Goal</p><p class="kpi-value" style="font-size:1.2rem">{{ modalPlayer.why.goal }}%</p></div>
             <div class="kpi"><p class="kpi-label">Assist</p><p class="kpi-value" style="font-size:1.2rem">{{ modalPlayer.why.assist }}%</p></div>
-            <div class="kpi"><p class="kpi-label">Clean sheet</p><p class="kpi-value" style="font-size:1.2rem">{{ modalPlayer.why.cs === null ? '–' : modalPlayer.why.cs + '%' }}</p></div>
+            <div class="kpi"><p class="kpi-label"><span class="sm:hidden">CS</span><span class="hidden sm:inline">Clean sheet</span></p><p class="kpi-value" style="font-size:1.2rem">{{ modalPlayer.why.cs === null ? '–' : modalPlayer.why.cs + '%' }}</p></div>
           </div>
         </div>
 
@@ -1372,7 +1372,7 @@
         </div>
 
         <div>
-          <p class="font-700 text-[15px] mb-2">Better options at this price</p>
+          <p class="font-700 text-[15px] mb-2">Other options in this price range</p>
           <div v-if="recommendationsFor(modalPlayer).length" class="group glass-card">
             <div v-for="rep in recommendationsFor(modalPlayer)" :key="rep.id" class="group-row clickable" @click="openPlayer(rep.id)">
               <player-photo :player="rep" size="w-9 h-9"></player-photo>
@@ -1387,7 +1387,7 @@
               <span class="delta" :class="rep.pred5 >= modalPlayer.pred5 ? 'up' : 'down'">{{ rep.pred5 >= modalPlayer.pred5 ? '+' : '' }}{{ (rep.pred5 - modalPlayer.pred5).toFixed(1) }}</span>
             </div>
           </div>
-          <p v-else class="text-[13px] text-dim">No better-projected option found in this price range.</p>
+          <p v-else class="text-[13px] text-dim">No other options found in this price range.</p>
         </div>
       </div>
     </div>
