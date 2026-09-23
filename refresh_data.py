@@ -193,8 +193,9 @@ def build_team_ratings(bootstrap, fixtures):
         obs_def = (xga_rate.get(tid, LEAGUE_GOALS_PER_TEAM) / LEAGUE_GOALS_PER_TEAM) if g else 1.0
         r = {}
         for home in (True, False):
-            sa = safe_float(t.get("strength_attack_home" if home else "strength_attack_away"), m_att[home])
-            sd = safe_float(t.get("strength_defence_home" if home else "strength_defence_away"), m_def[home])
+            # FPL sometimes leaves a strength at 0 (e.g. promoted clubs early on): treat that as league average
+            sa = safe_float(t.get("strength_attack_home" if home else "strength_attack_away")) or m_att[home]
+            sd = safe_float(t.get("strength_defence_home" if home else "strength_defence_away")) or m_def[home]
             # FPL strength ratings sit in a narrow band, so stretch them to realistic goal ranges
             prior_att = (sa / m_att[home]) ** 2.5
             prior_def = (m_def[home] / sd) ** 2.5
@@ -299,6 +300,19 @@ def build_predictions(bootstrap, fixtures, horizon_ids, next_gw, player_history)
                            "assist": round(100 * (1 - math.exp(-xa_m)) * avail0),
                            "cs": round(100 * cs_prob) if pos != "FWD" else None}
         out[e["id"]] = {"pred1": round(pred1, 1), "pred5": round(pred5, 1), "why": why}
+    return out
+
+
+def fallback_predictions(bootstrap, team_fixtures, next_gw):
+    """The old form + points-per-game formula. Only used if the main model hits unexpected data."""
+    out = {}
+    for e in bootstrap["elements"]:
+        base = 0.5 * safe_float(e.get("form")) + 0.5 * safe_float(e.get("points_per_game"))
+        fx = team_fixtures.get(e["team"], [])
+        avail = [fixture_availability(e["status"], e.get("chance_of_playing_next_round"), k) for k in range(len(fx))]
+        per = [base * max(0.55, min(1.2, 1.35 - 0.14 * x["fdr"])) * avail[k] for k, x in enumerate(sorted(fx, key=lambda x: x["event"]))]
+        p1 = sum(v for v, x in zip(per, sorted(fx, key=lambda x: x["event"])) if x["event"] == next_gw)
+        out[e["id"]] = {"pred1": round(p1, 1), "pred5": round(sum(per), 1), "why": None}
     return out
 
 
@@ -488,7 +502,7 @@ def main():
                   "captain": p["is_captain"], "vice": p["is_vice_captain"]} for p in picks_d["picks"]]
         gw_points_map = {c["event"]: c["points"] for c in hist_d["current"]}
         gw_history = [{"event": c["event"], "points": c["points"], "overallRank": c["overall_rank"], "value": c["value"]/10.0,
-                       "bench": c["points_on_bench"]} for c in hist_d["current"]]
+                       "bench": c["points_on_bench"], "total": c.get("total_points")} for c in hist_d["current"]]
 
         monthly = []
         for ph in phases_out:
@@ -550,7 +564,13 @@ def main():
     # ---------- players + predictions (model v2) ----------
     print("Running prediction model...")
     pos_map = {p["id"]: p["singular_name_short"] for p in bootstrap["element_types"]}
-    preds = build_predictions(bootstrap, fixtures, horizon_ids, next_ev["id"], player_history)
+    try:
+        preds = build_predictions(bootstrap, fixtures, horizon_ids, next_ev["id"], player_history)
+    except Exception as ex:
+        import traceback
+        traceback.print_exc()
+        print(f"WARNING: prediction model failed ({ex}); using the simple fallback formula this run.", file=sys.stderr)
+        preds = fallback_predictions(bootstrap, team_fixtures, next_ev["id"])
     players_out = []
     for e in bootstrap["elements"]:
         if e.get("removed"):
@@ -559,7 +579,7 @@ def main():
         pr = preds.get(e["id"], {"pred1": 0.0, "pred5": 0.0, "why": None})
         cost = e["now_cost"] / 10.0
         players_out.append({
-            "id": e["id"], "web": e["web_name"], "first": e["first_name"], "second": e["second_name"],
+            "id": e["id"], "code": e.get("code"), "web": e["web_name"], "first": e["first_name"], "second": e["second_name"],
             "team": team_id, "teamShort": teams_by_id[team_id]["short_name"], "pos": pos_map.get(e["element_type"], "?"),
             "cost": cost, "status": e["status"], "news": e.get("news", ""), "chanceNext": e.get("chance_of_playing_next_round"),
             "form": safe_float(e["form"]), "ppg": safe_float(e["points_per_game"]), "totalPoints": e["total_points"],
