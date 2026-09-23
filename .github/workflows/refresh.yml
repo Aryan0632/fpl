@@ -10,7 +10,11 @@ on:
   workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
 
 permissions:
-  contents: write   # needed so the bot can push the updated index.html back
+  contents: write   # needed so the bot can push the updated data files back
+
+concurrency:
+  group: fpl-refresh      # never let two refreshes run at once and trip over each other
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -24,14 +28,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Fetch fresh FPL data and patch index.html
-        run: python refresh_data.py
+      - name: Fetch fresh FPL data
+        run: python refresh_data.py   # writes data.json and model_log.json; never touches index.html
+        env:
+          # A manual "Run workflow" always does a full refresh; scheduled runs may skip when nothing changed
+          FORCE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
       - name: Commit and push if anything changed
         run: |
           git config user.name "fpl-refresh-bot"
           git config user.email "fpl-refresh-bot@users.noreply.github.com"
-          git pull
-          git add index.html
+          git pull --rebase --autostash
+          for f in data.json model_log.json; do [ -f "$f" ] && git add "$f"; done
           git diff --staged --quiet || git commit -m "Auto-refresh: $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push
